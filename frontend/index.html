@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio SED — Nhận diện âm thanh hô hấp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { blue: '#1E40AF', emerald: '#10B981' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .recording { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-brand-blue text-white py-4 shadow-md">
+        <div class="max-w-5xl mx-auto px-4 flex items-center gap-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            <h1 class="text-xl font-bold">Audio SED — Nhận diện sự kiện âm thanh hô hấp</h1>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-6 space-y-6">
+        <!-- Banner tư vấn dược sĩ -->
+        <div id="banner" class="hidden bg-brand-emerald text-white rounded-lg p-4 shadow-lg flex items-center gap-3">
+            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span class="font-semibold">Phát hiện triệu chứng Ho — Tư vấn Dược sĩ Long Châu 247: <a href="tel:18006928" class="underline">1800 6928</a></span>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <!-- Block 1: Sample list -->
+            <section class="bg-white rounded-lg shadow p-4">
+                <h2 class="font-semibold text-gray-700 mb-3">📁 Mẫu âm thanh</h2>
+                <ul id="sample-list" class="space-y-1 text-sm max-h-64 overflow-y-auto">
+                    <li class="text-gray-400">Đang tải...</li>
+                </ul>
+            </section>
+
+            <!-- Block 2: Recorder -->
+            <section class="bg-white rounded-lg shadow p-4 flex flex-col items-center justify-center gap-4">
+                <h2 class="font-semibold text-gray-700">🎙️ Thu âm trực tiếp</h2>
+                <button id="btn-record" class="w-20 h-20 rounded-full bg-red-500 hover:bg-red-600 text-white text-sm font-bold shadow-lg transition">
+                    REC
+                </button>
+                <p id="rec-status" class="text-xs text-gray-500">Nhấn để thu 5 giây</p>
+            </section>
+
+            <!-- Block 3: Results -->
+            <section class="bg-white rounded-lg shadow p-4">
+                <h2 class="font-semibold text-gray-700 mb-3">📊 Kết quả phân tích</h2>
+                <div id="results" class="text-sm text-gray-400">Chưa có kết quả</div>
+                <div id="inference-time" class="mt-2 text-xs text-gray-400"></div>
+            </section>
+        </div>
+
+        <!-- Timeline -->
+        <section id="timeline-section" class="hidden bg-white rounded-lg shadow p-4">
+            <h2 class="font-semibold text-gray-700 mb-3">🕐 Timeline sự kiện</h2>
+            <div id="timeline" class="relative h-12 bg-gray-100 rounded overflow-hidden"></div>
+            <div id="timeline-legend" class="mt-2 flex gap-4 text-xs text-gray-600"></div>
+        </section>
+
+        <!-- Cough Assessment Form (shown when cough detected) -->
+        <section id="assessment-section" class="hidden bg-white rounded-lg shadow p-4">
+            <h2 class="font-semibold text-gray-700 mb-3">🩺 Phân loại ho — Nhận gợi ý chăm sóc</h2>
+            <p class="text-sm text-gray-500 mb-4">Phát hiện tiếng ho. Vui lòng cung cấp thêm thông tin để nhận khuyến nghị phù hợp:</p>
+            <form id="assessment-form" class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Loại ho</label>
+                    <select name="cough_type" class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="dry">Ho khan</option>
+                        <option value="phlegm">Ho có đờm</option>
+                        <option value="whooping">Ho gà</option>
+                        <option value="irritant">Ho kích ứng</option>
+                        <option value="allergic">Ho dị ứng</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Thời gian ho</label>
+                    <select name="duration" class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="acute">Cấp tính (&lt; 3 tuần)</option>
+                        <option value="subacute">Bán cấp (3–8 tuần)</option>
+                        <option value="chronic">Mạn tính (&gt; 8 tuần)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Đối tượng</label>
+                    <select name="subject" class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="adult">Người lớn</option>
+                        <option value="child">Trẻ em (2–12 tuổi)</option>
+                        <option value="infant">Trẻ &lt; 2 tuổi</option>
+                        <option value="pregnant">Phụ nữ mang thai</option>
+                        <option value="elderly">Người cao tuổi</option>
+                        <option value="chronic_disease">Người có bệnh nền</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Mức độ</label>
+                    <select name="cough_frequency" class="w-full border rounded px-3 py-2 text-sm">
+                        <option value="mild">Nhẹ (ho ít)</option>
+                        <option value="moderate" selected>Trung bình</option>
+                        <option value="severe">Nặng (ho nhiều, ảnh hưởng sinh hoạt)</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-600 mb-1">Dấu hiệu nguy hiểm (nếu có)</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="bloody_cough"> Ho ra máu</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="difficulty_breathing"> Khó thở</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="prolonged_fever"> Sốt cao kéo dài</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="chest_pain"> Đau ngực</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="cyanosis"> Tím tái</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="weight_loss"> Sụt cân</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" name="red_flags" value="prolonged_cough"> Ho kéo dài nhiều tuần</label>
+                    </div>
+                </div>
+                <div class="md:col-span-2 flex gap-4">
+                    <label class="flex items-center gap-1 text-sm"><input type="checkbox" name="night_cough"> Ho về đêm</label>
+                    <label class="flex items-center gap-1 text-sm"><input type="checkbox" name="post_flu"> Ho sau cảm cúm</label>
+                </div>
+                <div class="md:col-span-2">
+                    <button type="submit" class="bg-brand-blue text-white px-6 py-2 rounded font-semibold hover:bg-blue-700 transition">
+                        Nhận khuyến nghị
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Recommendations -->
+        <section id="recommendation-section" class="hidden bg-white rounded-lg shadow p-4">
+            <h2 class="font-semibold text-gray-700 mb-3">💡 Khuyến nghị chăm sóc</h2>
+            <div id="warnings" class="mb-3"></div>
+            <div id="classification-summary" class="mb-4 text-sm bg-gray-50 rounded p-3"></div>
+            <div id="recommendations" class="space-y-3"></div>
+            <p class="mt-4 text-xs text-gray-400 italic">⚠️ Thông tin chỉ mang tính tham khảo. Vui lòng tham vấn dược sĩ hoặc bác sĩ trước khi sử dụng thuốc.</p>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.pem
+backend/storage/recordings/
+backend/storage/raw/
+backend/models/yamnet.onnx
