@@ -27,6 +27,13 @@
         <div class="max-w-5xl mx-auto px-4 flex items-center gap-3">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
             <h1 class="text-xl font-bold">Audio SED — Nhận diện sự kiện âm thanh hô hấp</h1>
+            <div class="ml-auto flex items-center gap-2 text-sm">
+                <span class="opacity-75">Mode:</span>
+                <select id="mode-select" class="bg-blue-700 text-white border border-blue-400 rounded px-2 py-1 text-sm">
+                    <option value="v1">V1 — Phát hiện ho</option>
+                    <option value="v2">V2 — Phân loại ho khan/đờm</option>
+                </select>
+            </div>
         </div>
     </header>
 
@@ -59,6 +66,7 @@
             <section class="bg-white rounded-lg shadow p-4">
                 <h2 class="font-semibold text-gray-700 mb-3">📊 Kết quả phân tích</h2>
                 <div id="results" class="text-sm text-gray-400">Chưa có kết quả</div>
+                <div id="v2-result" class="hidden mt-3 p-3 bg-blue-50 rounded-lg border border-blue-200"></div>
                 <div id="inference-time" class="mt-2 text-xs text-gray-400"></div>
             </section>
         </div>

@@ -14,6 +14,7 @@ from cough_recommendation import (
     CoughAssessment, classify_and_recommend,
     COUGH_TYPES, DURATION_CATEGORIES, SUBJECT_GROUPS, RED_FLAG_LABELS,
 )
+from cough_type_v2 import classify_cough_type
 
 STORAGE_DIR = Path(__file__).parent / "storage" / "real_wav"
 RECORDINGS_DIR = Path(__file__).parent / "storage" / "recordings"
@@ -45,7 +46,7 @@ def get_sample(filename: str):
 
 
 @app.post("/api/analyze")
-async def analyze_audio(file: UploadFile):
+async def analyze_audio(file: UploadFile, mode: str = "v1"):
     tmp_path = None
     try:
         data = await file.read()
@@ -58,7 +59,11 @@ async def analyze_audio(file: UploadFile):
         save_name = datetime.now().strftime("%Y%m%d_%H%M%S") + ext
         (RECORDINGS_DIR / save_name).write_bytes(data)
         audio_np, sr = librosa.load(str(tmp_path), sr=16000, mono=True)
-        return analyze(audio_np, sr)
+        result = analyze(audio_np, sr)
+        # V2: add cough type classification if cough detected
+        if mode == "v2" and result["has_cough"]:
+            result["cough_type_analysis"] = classify_cough_type(audio_np, sr)
+        return result
     except Exception as e:
         raise HTTPException(400, str(e))
     finally:

@@ -5,6 +5,7 @@
   const API = "";
   const RECORD_SECONDS = 5;
   const CLASS_COLORS = { Cough: "#EF4444", Breathing: "#3B82F6", Snoring: "#8B5CF6", Wheeze: "#F59E0B" };
+  const modeSelect = document.getElementById("mode-select");
 
   const sampleList = document.getElementById("sample-list");
   const btnRecord = document.getElementById("btn-record");
@@ -56,7 +57,8 @@
   async function sendForAnalysis(blob, label) {
     const form = new FormData();
     form.append("file", blob, label || "recording.wav");
-    const res = await fetch(`${API}/api/analyze`, { method: "POST", body: form });
+    const mode = modeSelect.value;
+    const res = await fetch(`${API}/api/analyze?mode=${mode}`, { method: "POST", body: form });
     if (!res.ok) throw new Error(await res.text());
     const data = await res.json();
     renderResults(data);
@@ -128,6 +130,24 @@
     }
 
     inferenceTime.textContent = `⏱ ${inference_time_ms.toFixed(0)}ms | ${duration_sec}s audio`;
+
+    // V2: Cough type classification
+    const v2Box = document.getElementById("v2-result");
+    if (data.cough_type_analysis) {
+      const ct = data.cough_type_analysis;
+      v2Box.classList.remove("hidden");
+      v2Box.innerHTML = `
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">${ct.cough_type === "dry" ? "🌵" : "💧"}</span>
+          <div>
+            <div class="font-bold text-lg">${ct.cough_type_vi}</div>
+            <div class="text-xs text-gray-500">Confidence: ${(ct.confidence * 100).toFixed(0)}% | Ho khan: ${(ct.probabilities.dry * 100).toFixed(0)}% — Ho đờm: ${(ct.probabilities.wet * 100).toFixed(0)}%</div>
+          </div>
+        </div>`;
+    } else {
+      v2Box.classList.add("hidden");
+      v2Box.innerHTML = "";
+    }
 
     // Timeline
     if (events.length && duration_sec > 0) {
