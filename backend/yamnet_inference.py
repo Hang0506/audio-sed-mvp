@@ -14,7 +14,9 @@ COUGH_THRESHOLD = 0.30
 WINDOW_SEC = 0.96
 HOP_SEC = 0.48
 
-_session: ort.InferenceSession | None = None
+from typing import Optional
+
+_session: Optional[ort.InferenceSession] = None
 
 
 def load_model() -> ort.InferenceSession:
