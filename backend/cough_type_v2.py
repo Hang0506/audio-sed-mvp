@@ -10,7 +10,9 @@ from pathlib import Path
 import librosa
 import numpy as np
 
-_weights: dict | None = None
+from typing import Optional
+
+_weights: Optional[dict] = None
 LABELS = ["dry", "wet"]
 LABELS_VI = {"dry": "Ho khan", "wet": "Ho có đờm"}
 
