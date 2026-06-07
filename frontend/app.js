@@ -241,9 +241,38 @@
     }
   }
 
+  // --- Auto-detect subject from sample filename ---
+  function detectSubjectFromFilename(filename) {
+    const lower = filename.toLowerCase();
+    if (lower.includes("child") || lower.includes("tre_em") || lower.includes("baby")) return "child";
+    if (lower.includes("infant") || lower.includes("so_sinh")) return "infant";
+    return null;
+  }
+
+  function selectSubject(value) {
+    const hiddenInput = document.querySelector('input[name="subject"]');
+    if (hiddenInput) hiddenInput.value = value;
+    const container = document.getElementById("group-subject");
+    if (!container) return;
+    container.querySelectorAll("button").forEach(btn => {
+      if (btn.getAttribute("data-val") === value) {
+        btn.classList.add("step-active", "border-longchau-blue", "bg-longchau-blueLight");
+      } else {
+        btn.classList.remove("step-active", "border-longchau-blue", "bg-longchau-blueLight");
+      }
+    });
+  }
+
   // --- Analyze a sample file ---
   async function analyzeSample(filename) {
     showLoading();
+    // Auto-select subject based on filename
+    const detectedSubject = detectSubjectFromFilename(filename);
+    if (detectedSubject) {
+      selectSubject(detectedSubject);
+    } else {
+      selectSubject("adult");
+    }
     try {
       const res = await fetch(`${API}/api/samples/${filename}`);
       const blob = await res.blob();

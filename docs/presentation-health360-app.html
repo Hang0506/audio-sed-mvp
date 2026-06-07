@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI HEALTH 360 — Redesign Preview v4 (Deep ENT Alignment)</title>
+<style>
+/* ═══════════════════ DESIGN SYSTEM TOKENS ═══════════════════ */
+:root {
+  --bg: #090d16;           /* Deep clinical dark background */
+  --card: #131c2e;         /* Premium Card Component */
+  --card-hover: #1b263f;   /* Interactive states */
+  --text: #f8fafc;         /* Crisp high-contrast body text */
+  --muted: #64748b;        /* Secondary supporting text */
+  --border: #1e293b;       /* Subtle clean divider borders */
+  
+  /* Semantic Accents */
+  --blue: #38bdf8;         /* Core Focus: ENT / Respiratory / Primary actions */
+  --teal: #10b981;         /* Safe state / Completed habits */
+  --orange: #fb923c;       /* Sexy Coin Gold / Warning / Risk alerts */
+  --red: #ef4444;          /* Escalation / Critical emergency */
+  --purple: #a78bfa;       /* Clinical diagnostics / Audio tracking */
+  
+  --radius-lg: 20px;
+  --radius-sm: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: #020617;
+  color: var(--text);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ═══════════════════ PROTOTYPE LAYER SHELL ═══════════════════ */
+.preview-container {
+  display: flex;
+  gap: 40px;
+  max-width: 1200px;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.preview-controller {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preview-desc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.flow-section-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 8px;
+}
+
+.preview-btn {
+  background: #0b111e;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.preview-btn:hover {
+  background: var(--card-hover);
+  border-color: #475569;
+}
+
+.preview-btn.active {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* ═══════════════════ HARDWARE SCREEN VIEWPORT ═══════════════════ */
+.app-viewport {
+  width: 375px;
+  height: 812px;
+  background: var(--bg);
+  border-radius: 44px;
+  border: 10px solid #1e293b;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  position: relative;
+  overflow: hidden;
+  display: none;
+  flex-direction: column;
+  animation: fadeSlide 0.35s ease-out;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.app-viewport.active-screen {
+  display: flex;
+}
+
+.phone-notch {
+  width: 160px;
+  height: 26px;
+  background: #1e293b;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  z-index: 999;
+}
+
+/* ═══════════════════ GAMIFIED HEADER COMPONENT ═══════════════════ */
+.app-header {
+  padding: 44px 20px 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0c1220;
+}
+
+.header-user-block h2 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text);
+}
+.header-user-block span {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: 0.3px;
+}
+
+.header-coin-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(251, 146, 60, 0.12);
+  border: 1px solid rgba(251, 146, 60, 0.25);
+  padding: 6px 14px;
+  border-radius: 30px;
+}
+.header-coin-amount {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--orange);
+  letter-spacing: -0.5px;
+  transition: transform 0.15s ease;
+}
+
+/* ═══════════════════ UI LAYOUTS & CONTAINERS ═══════════════════ */
+.app-scroll-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  padding-bottom: 90px;
+}
+.app-scroll-content::-webkit-scrollbar { display: none; }
+
+.ui-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.ui-card-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 12px;
+}
+
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+.ui-badge-blue { background: rgba(56,189,248,0.12); color: var(--blue); }
+.ui-badge-orange { background: rgba(251,146,60,0.12); color: var(--orange); }
+.ui-badge-teal { background: rgba(16,185,129,0.12); color: var(--teal); }
+.ui-badge-red { background: rgba(239,68,68,0.12); color: var(--red); }
+.ui-badge-purple { background: rgba(167,139,250,0.12); color: var(--purple); }
+
+.ui-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  border: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+.ui-btn:active { opacity: 0.8; }
+.ui-btn-primary { background: var(--blue); color: #090d16; }
+.ui-btn-teal { background: var(--teal); color: #090d16; }
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.timeline-icon { font-size: 1.2rem; }
+.timeline-time {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* GAMIFIED INTERACTIVE HABIT ITEMS */
+.habit-interactive-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.habit-interactive-row:hover { border-color: #334155; }
+.habit-interactive-row.is-done {
+  border-color: rgba(16,185,129,0.4);
+  background: rgba(16,185,129,0.03);
+}
+.habit-interactive-row.is-done h4 {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+.reward-coin-trigger {
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--orange);
+  background: rgba(251, 146, 60, 0.08);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid rgba(251, 146, 60, 0.15);
+}
+.habit-interactive-row.is-done .reward-coin-trigger {
+  color: var(--teal);
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+/* BEFORE / AFTER SCREEN STYLING */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 12px 1fr;
+  align-items: center;
+  background: #0f172a;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  margin-bottom: 10px;
+}
+.comp-block { text-align: center; }
+.comp-label { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.comp-val { font-size: 1.1rem; font-weight: 800; }
+
+.survey-option {
+  background: #0f172a;
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+}
+.survey-option:hover { border-color: var(--blue); }
+.survey-option input { accent-color: var(--blue); width: 16px; height: 16px; pointer-events: none; }
+
+.food-select-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.food-btn {
+  background: #0f172a;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.food-btn:hover { border-color: var(--blue); }
+
+.app-tabbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: #0c1220;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 16px;
+  z-index: 900;
+}
+.tab-item { display: flex; flex-direction: column; align-items: center; cursor: pointer; opacity: 0.4; color: var(--text); }
+.tab-item.active { opacity: 1; color: var(--blue); }
+.tab-icon { font-size: 1.2rem; margin-bottom: 2px; }
+.tab-label { font-size: 0.6rem; font-weight: 600; }
+
+/* ═══════════════════ ANIMATIONS KINETICS ═══════════════════ */
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes pulse { from { opacity: 0.4; } to { opacity: 1; } }
+
+@keyframes scanMove {
+  0% { top: 15%; opacity: 0.3; }
+  50% { top: 80%; opacity: 1; }
+  100% { top: 15%; opacity: 0.3; }
+}
+</style>
+</head>
+<body>
+
+<div class="preview-container">
+  <!-- INTERACTIVE UX CONTROLLER PANEL -->
+  <div class="preview-controller">
+    <div class="preview-title">🧬 AI Health 360</div>
+    <p class="preview-desc">Bản thử nghiệm UX v4: Định hình luồng sàng lọc Tai-Mũi-Họng liên kết trực tiếp chức năng hệ thống phần cứng Phone.</p>
+    
+    <div class="flow-section-title">Phân Khúc 1: Khảo Sát & Sàng Lọc Lâm Sàng</div>
+    <button class="preview-btn active" onclick="switchScreen('scr-survey-1', this)">1. Khảo sát TAI - MŨI - HỌNG <span>🩺</span></button>
+    <button class="preview-btn" onclick="switchScreen('scr-profile-loading', this)">2. Đang Phân Tích Thuật Toán <span>🤖</span></button>
+    
+    <div class="flow-section-title">Phân Khúc 2: Kích Hoạt Tính Năng Theo Khảo Sát</div>
+    <button class="preview-btn" onclick="switchScreen('scr-day-morning', this)">3. Màn Hình Sáng: Widget Thời Tiết <span>🌅</span></button>
+    <button class="preview-btn" onclick="switchScreen('scr-day-noon', this)">4. Màn Hình Trưa: Máy Quét Camera AI <span>📸</span></button>
+    <button class="preview-btn" onclick="switchScreen('scr-day-night', this)">5. Màn Hình Đêm: Audio AI Ngủ Ngáy <span>🌙</span></button>
+    
+    <div class="flow-section-title">Phân Khúc 3: Động Lực Tuần & Kinh Doanh</div>
+    <button class="preview-btn" onclick="switchScreen('scr-weekly-review', this)">6. Tổng Kết Tuần (Before/After) <span>📊</span></button>
+    <button class="preview-btn" onclick="switchScreen('scr-marketplace', this)">7. Đổi Thưởng & Mua Sắm <span>🎁</span></button>
+  </div>
+
+  <!-- 1. DEEP ENT SURVEY STEP -->
+  <div id="scr-survey-1" class="app-viewport active-screen">
+    <div class="phone-notch"></div>
+    <header class="app-header">
+      <div style="font-size: 0.72rem; font-weight: bold; color: var(--blue);">SÀNG LỌC LÂM SÀNG</div>
+      <h1 style="font-size: 0.9rem; font-weight: 800;">Chỉ Số Tai-Mũi-Họng</h1>
+      <div style="width:20px;"></div>
+    </header>
+    <main class="app-scroll-content">
+      <h2 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 4px; line-height: 1.4;">Cặp triệu chứng nào đang làm phiền bạn nhất?</h2>
+      <p style="font-size: 0.75rem; color: var(--muted); margin-bottom: 16px;">Chọn để AI kích hoạt cảm biến đo lường tương ứng phần cứng.</p>
+      
+      <!-- CẶP MŨI -->
+      <div style="font-size: 0.65rem; color: var(--blue); font-weight: 800; letter-spacing: 0.5px; margin: 12px 0 6px 4px; text-transform: uppercase;">👃 Nhóm Triệu Chứng MŨI (Nose)</div>
+      <div class="survey-option" onclick="toggleCheck(this)">
+        <input type="checkbox" checked>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: bold;">Hắt hơi liên tục khi thời tiết giao mùa</span>
+          <span style="font-size: 0.65rem; color: var(--muted);">➔ Kích hoạt Widget Định vị & Đo chỉ số thời tiết / PM2.5</span>
+        </div>
+      </div>
+      <div class="survey-option" onclick="toggleCheck(this)">
+        <input type="checkbox" checked>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: bold;">Nghẹt mũi, ngứa họng sau ăn đồ lạ, đồ lạnh</span>
+          <span style="font-size: 0.65rem; color: var(--muted);">➔ Kích hoạt Máy Quét Camera AI phân tích dị nguyên thức ăn</span>
+        </div>
+      </div>
+
+      <!-- CẶP HỌNG & TAI -->
+      <div style="font-size: 0.65rem; color: var(--purple); font-weight: 800; letter-spacing: 0.5px; margin: 16px 0 6px 4px; text-transform: uppercase;">🗣️👂 Nhóm TAI - HỌNG & ĐÊM (Throat & Ear)</div>
+      <div class="survey-option" onclick="toggleCheck(this)">
+        <input type="checkbox" checked>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: bold;">Ho khan kịch phát, ngứa cổ rát họng về đêm</span>
+          <span style="font-size: 0.65rem; color: var(--muted);">➔ Kích hoạt Audio AI Mic ghi âm, phân tích tần suất Ho nền</span>
+        </div>
+      </div>
+      <div class="survey-option" onclick="toggleCheck(this)">
+        <input type="checkbox" checked>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: bold;">Ngủ ngáy, thở bằng miệng, ù khò khè</span>
+          <span style="font-size: 0.65rem; color: var(--muted);">➔ Kích hoạt Cảm biến âm thanh đo Oxy và tiếng thở ngáy ngủ</span>
+        </div>
+      </div>
+
+      <button class="ui-btn ui-btn-primary" style="margin-top: 20px;" onclick="document.querySelectorAll('.preview-btn')[1].click()">Phân Tích Hồ Sơ Gốc ➔</button>
+    </main>
+  </div>
+
+  <!-- 2. ONBOARDING: LOADING & LINKING -->
+  <div id="scr-profile-loading" class="app-viewport">
+    <div class="phone-notch"></div>
+    <main class="app-scroll-content" style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100%; text-align:center;">
+      <div style="width: 60px; height: 60px; border: 4px solid var(--blue); border-top-color: transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 24px;"></div>
+      <h2 style="font-size: 1.05rem; font-weight: 800; margin-bottom: 8px;">Đang kết nối API phần cứng...</h2>
+      <div class="ui-card" style="background: rgba(56,189,248,0.05); border-color: rgba(56,189,248,0.2); width: 100%; text-align: left;">
+        <p style="font-size: 0.72rem; color: var(--blue); font-weight: bold; text-align: center;" id="profile-result-text">⏳ KHỞI TẠO HỆ THỐNG CẢM BIẾN...</p>
+      </div>
+    </main>
+  </div>
+
+  <!-- 3. MORNING SCREEN: WEATHER CAPABILITY -->
+  <div id="scr-day-morning" class="app-viewport">
+    <div class="phone-notch"></div>
+    <header class="app-header">
+      <div class="header-user-block">
+        <h2>Chào Minh Tuấn 👋</h2>
+        <span>VIÊM MŨI DỊ ỨNG THỜI TIẾT</span>
+      </div>
+      <div class="header-coin-badge">
+        <span class="header-coin-amount" id="coin-morn">750</span>
+        <span style="font-size: 0.9rem;">🪙</span>
+      </div>
+    </header>
+    <main class="app-scroll-content">
+      <div class="timeline-header">
+        <span class="timeline-icon">🌅</span>
+        <span class="timeline-time">Buổi sáng • 07:00 • Định Vị GPS Khí Tượng</span>
+      </div>
+
+      <!-- WEATHER / AQI SENSOR INTEGRATION -->
+      <div class="ui-card" style="border-left: 4px solid var(--orange); background: linear-gradient(135deg, #241610 0%, var(--card) 100%);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <span class="ui-badge ui-badge-orange">⚠️ NGUY CƠ KÍCH ỨNG MŨI: 85%</span>
+          <span style="font-size: 0.7rem; font-weight: bold; color: var(--orange);">AQI: 162 😷</span>
+        </div>
+        <p style="font-size: 0.85rem; font-weight: bold; line-height: 1.4; margin-bottom: 4px;">Độ ẩm giảm sâu đột ngột (52%) & Bụi mịn PM2.5 tăng mạnh.</p>
+        <p style="font-size: 0.72rem; color: var(--muted);">Dựa trên khảo sát triệu chứng hắt hơi của bạn, niêm mạc mũi có nguy cơ phù nề cao trong sáng nay.</p>
+      </div>
+
+      <div class="ui-card">
+        <div class="ui-card-title">Nhiệm vụ phòng bệnh nhận xu</div>
+        <div class="habit-interactive-row" id="task-morn-1" onclick="completeTaskRow('task-morn-1', 50)">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <h4 style="font-size: 0.8rem; font-weight: 700;">Vệ sinh cuốn mũi bằng nước muối ấm</h4>
+            <p style="font-size: 0.65rem; color: var(--muted);">Loại bỏ bụi mịn bám dính gây kích ứng hắt hơi.</p>
+          </div>
+          <div class="reward-coin-trigger">🪙 +50</div>
+        </div>
+      </div>
+    </main>
+    <nav class="app-tabbar">
+      <div class="tab-item active"><span class="tab-icon">🏠</span><span class="tab-label">Trang chủ</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[5].click()"><span class="tab-icon">📊</span><span class="tab-label">Tổng kết</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[6].click()"><span class="tab-icon">🎁</span><span class="tab-label">Đổi thưởng</span></div>
+    </nav>
+  </div>
+
+  <!-- 4. NOON SCREEN: CAMERA AI SCANNER -->
+  <div id="scr-day-noon" class="app-viewport">
+    <div class="phone-notch"></div>
+    <header class="app-header">
+      <div class="header-user-block">
+        <h2>Chào Minh Tuấn 👋</h2>
+        <span>VIÊM MŨI DỊ ỨNG THỜI TIẾT</span>
+      </div>
+      <div class="header-coin-badge">
+        <span class="header-coin-amount" id="coin-noon">750</span>
+        <span style="font-size: 0.9rem;">🪙</span>
+      </div>
+    </header>
+    <main class="app-scroll-content">
+      <div class="timeline-header">
+        <span class="timeline-icon">🕒</span>
+        <span class="timeline-time">Trong ngày • 12:30 • Chụp Ảnh Kiểm Tra Dị Nguyên</span>
+      </div>
+
+      <!-- PREMIUM AI CAMERA VIEWFINDER -->
+      <div class="ui-card" style="padding: 0; overflow: hidden; border: 1px solid rgba(56, 189, 248, 0.3); position: relative;">
+        <div style="background: rgba(56,189,248,0.08); padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.68rem; font-weight: 800; color: var(--blue); letter-spacing: 0.5px;">📸 MÁY QUÉT CAMERA AI (ENT NUTRITION)</span>
+          <span style="font-size: 0.6rem; color: var(--teal); background: rgba(16,185,129,0.1); padding: 2px 6px; border-radius: 4px; font-weight: bold; animation: pulse 1s infinite alternate;">● LENS LIVE</span>
+        </div>
+        
+        <div style="height: 160px; background: #0b1324; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+          <div style="position: absolute; top: 15px; left: 35px; width: 15px; height: 15px; border-top: 2px solid var(--blue); border-left: 2px solid var(--blue);"></div>
+          <div style="position: absolute; top: 15px; right: 35px; width: 15px; height: 15px; border-top: 2px solid var(--blue); border-right: 2px solid var(--blue);"></div>
+          <div style="position: absolute; bottom: 15px; left: 35px; width: 15px; height: 15px; border-bottom: 2px solid var(--blue); border-left: 2px solid var(--blue);"></div>
+          <div style="position: absolute; bottom: 15px; right: 35px; width: 15px; height: 15px; border-bottom: 2px solid var(--blue); border-right: 2px solid var(--blue);"></div>
+          <div style="position: absolute; left: 35px; right: 35px; height: 2px; background: linear-gradient(90deg, transparent, var(--blue), transparent); top: 20%; animation: scanMove 2.5s infinite ease-in-out; box-shadow: 0 0 8px var(--blue);"></div>
+          <p style="font-size: 0.7rem; color: var(--muted); text-align: center; max-width: 75%; z-index: 2; line-height: 1.4;">Đưa đồ ăn/thức uống vào khung ngắm camera để tầm soát nguy cơ ngứa họng, ngạt mũi...</p>
+        </div>
+
+        <div style="padding: 12px; background: #0c1424; border-top: 1px solid var(--border);">
+          <div class="food-select-grid" style="margin-bottom: 0;">
+            <button class="food-btn" onclick="runEntScanner('haisan')" style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold; background: #131e36;">
+              <span>📸</span> Đĩa Lẩu Hải Sản
+            </button>
+            <button class="food-btn" onclick="runEntScanner('dalanh')" style="display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: bold; background: #131e36;">
+              <span>📸</span> Cốc Nước Đá Lạnh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KẾT QUẢ QUÉT CAMERA -->
+      <div id="ent-scan-result" class="ui-card" style="display: none; border-left: 4px solid var(--orange); animation: fadeSlide 0.3s ease-out;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+          <span id="res-food-name" class="ui-badge ui-badge-orange" style="font-size: 0.68rem;">MÓN ĂN: CHƯA QUÉT</span>
+          <span style="font-size: 0.7rem; color: var(--teal); font-weight: bold;" id="scan-reward-text">🪙 +50 Coins</span>
+        </div>
+        <p id="res-ent-risk" style="font-size: 0.82rem; font-weight: bold; color: var(--red);"></p>
+        <p id="res-ent-desc" style="font-size: 0.75rem; color: var(--text); opacity: 0.85; margin: 4px 0 10px 0; line-height: 1.4;"></p>
+        <div style="background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.15); padding: 8px; border-radius: var(--radius-sm);">
+          <p id="res-ent-action" style="font-size: 0.7rem; color: var(--text); line-height: 1.4;"></p>
+        </div>
+      </div>
+    </main>
+    <nav class="app-tabbar">
+      <div class="tab-item active"><span class="tab-icon">🏠</span><span class="tab-label">Trang chủ</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[5].click()"><span class="tab-icon">📊</span><span class="tab-label">Tổng kết</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[6].click()"><span class="tab-icon">🎁</span><span class="tab-label">Đổi thưởng</span></div>
+    </nav>
+  </div>
+
+  <!-- 5. NIGHT SCREEN: AUDIO AI SNORING & COUGH MONITOR -->
+  <div id="scr-day-night" class="app-viewport">
+    <div class="phone-notch"></div>
+    <header class="app-header">
+      <div class="header-user-block">
+        <h2>Chào Minh Tuấn 👋</h2>
+        <span>VIÊM MŨI DỊ ỨNG THỜI TIẾT</span>
+      </div>
+      <div class="header-coin-badge">
+        <span class="header-coin-amount" id="coin-night">750</span>
+        <span style="font-size: 0.9rem;">🪙</span>
+      </div>
+    </header>
+    <main class="app-scroll-content">
+      <div class="timeline-header">
+        <span class="timeline-icon">🌙</span>
+        <span class="timeline-time">Buổi tối • 22:00 • Giám Sát Giấc Ngủ</span>
+      </div>
+
+      <!-- AUDIO AI TRACKING CAPABILITY -->
+      <div class="ui-card" style="border-left: 4px solid var(--purple); background: rgba(167,139,250,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <span class="ui-badge ui-badge-purple">🎙️ TRỢ LÝ ĐÊM AUDIO AI</span>
+          <span style="font-size: 0.6rem; color: var(--purple); font-weight: bold; animation: pulse 0.8s infinite alternate;">● MIC ACTIVE</span>
+        </div>
+        <p style="font-size: 0.85rem; font-weight: bold; line-height: 1.4; margin-bottom: 6px;">Tự động lắng nghe dấu hiệu Ho, Ngủ ngáy và Thở dốc vùng họng.</p>
+        <p style="font-size: 0.72rem; color: var(--muted); line-height: 1.4;">Kết nối sâu với chỉ số khảo sát của bạn về việc rát họng, ngủ ngáy, ngạt thở về đêm nhằm đánh giá độ tắc nghẽn của đường thở.</p>
+        
+        <!-- Giả lập biểu đồ sóng âm chạy ngang sống động -->
+        <div style="display:flex; align-items:center; justify-content:center; gap:3px; height:30px; margin-top:14px; background:#0b1222; border-radius:6px; padding:0 10px;">
+          <div style="width:3px; height:12px; background:var(--purple); animation:pulse 0.4s infinite alternate;"></div>
+          <div style="width:3px; height:22px; background:var(--purple); animation:pulse 0.6s infinite alternate;"></div>
+          <div style="width:3px; height:8px; background:var(--purple); animation:pulse 0.3s infinite alternate;"></div>
+          <div style="width:3px; height:18px; background:var(--purple); animation:pulse 0.5s infinite alternate;"></div>
+          <div style="width:3px; height:14px; background:var(--purple); animation:pulse 0.7s infinite alternate;"></div>
+        </div>
+      </div>
+
+      <div class="ui-card">
+        <div class="ui-card-title">Kết toán mục tiêu cuối ngày</div>
+        <button id="btn-claim-coins" class="ui-btn ui-btn-primary" style="background: var(--teal); font-size: 0.85rem;" onclick="claimNightlyBonus(this)">🎁 KÍCH HOẠT ĐO ĐÊM +100 COINS</button>
+      </div>
+    </main>
+    <nav class="app-tabbar">
+      <div class="tab-item active"><span class="tab-icon">🏠</span><span class="tab-label">Trang chủ</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[5].click()"><span class="tab-icon">📊</span><span class="tab-label">Tổng kết</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[6].click()"><span class="tab-icon">🎁</span><span class="tab-label">Đổi thưởng</span></div>
+    </nav>
+  </div>
+
+  <!-- 6. WEEKLY REVIEW (BEFORE -> AFTER REPORT) -->
+  <div id="scr-weekly-review" class="app-viewport">
+    <div class="phone-notch"></div>
+    <header class="app-header">
+      <div class="header-user-block">
+        <h2>📅 Báo cáo chu kỳ tuần</h2>
+        <span style="color: var(--teal);">TRIỆU CHỨNG ĐANG GIẢM DẦN</span>
+      </div>
+      <div class="header-coin-badge">
+        <span class="header-coin-amount" id="coin-week">750</span>
+        <span style="font-size: 0.9rem;">🪙</span>
+      </div>
+    </header>
+    <main class="app-scroll-content">
+      <p style="font-size: 0.78rem; color: var(--muted); margin-bottom: 12px;">Đối chiếu lâm sàng dựa trên khảo sát Tai-Mũi-Họng ban đầu.</p>
+
+      <!-- AUDIO AI EVIDENCE BASED AFTER REPORT -->
+      <div class="ui-card">
+        <div class="ui-card-title">🎙️ Kết quả Audio AI ghi âm ban đêm</div>
+        <div class="comparison-grid">
+          <div class="comp-block"><div class="comp-label">CƠN HO KHAN</div><div class="comp-val" style="color:var(--red);">6 lần/đêm</div></div>
+          <div style="color:var(--muted); text-align:center; font-weight:bold;">➔</div>
+          <div class="comp-block"><div class="comp-label">HIỆN TẠI</div><div class="comp-val" style="color:var(--teal);">1 lần/đêm</div></div>
+        </div>
+        <div class="comparison-grid" style="margin-top: 8px;">
+          <div class="comp-block"><div class="comp-label">TIẾNG THỞ NGÁY</div><div class="comp-val" style="color:var(--orange);">42 phút</div></div>
+          <div style="color:var(--muted); text-align:center; font-weight:bold;">➔</div>
+          <div class="comp-block"><div class="comp-label">HIỆN TẠI</div><div class="comp-val" style="color:var(--teal);">12 phút</div></div>
+        </div>
+      </div>
+
+      <div class="ui-card" style="border: 1px solid rgba(251,146,60,0.3); background: linear-gradient(135deg, #241610 0%, var(--card) 100%); text-align: center;">
+        <div class="ui-card-title" style="color: var(--orange);">Thành quả bảo vệ hệ hô hấp</div>
+        <h3 style="font-size: 1.3rem; font-weight: 900; color: var(--orange); margin: 4px 0 12px 0;">🪙 +450 COINS</h3>
+        <button id="btn-claim-week" class="ui-btn ui-btn-primary" style="background: var(--orange); color: #090d16;" onclick="claimWeeklyBonus(this)">THU HOẠCH PHẦN THƯỞNG TUẦN</button>
+      </div>
+    </main>
+    <nav class="app-tabbar">
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[2].click()"><span class="tab-icon">🏠</span><span class="tab-label">Trang chủ</span></div>
+      <div class="tab-item active"><span class="tab-icon">📊</span><span class="tab-label">Tổng kết</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[6].click()"><span class="tab-icon">🎁</span><span class="tab-label">Đổi thưởng</span></div>
+    </nav>
+  </div>
+
+  <!-- 7. VALUE RETENTION: MARKETPLACE -->
+  <div id="scr-marketplace" class="app-viewport">
+    <div class="phone-notch"></div>
+    <header class="app-header">
+      <div class="header-user-block">
+        <h2>Trung Tâm Đổi Thưởng</h2>
+        <span>TIẾT KIỆM TỪ SỨC KHỎE</span>
+      </div>
+      <div class="header-coin-badge">
+        <span class="header-coin-amount" id="coin-market">750</span>
+        <span style="font-size: 0.9rem;">🪙</span>
+      </div>
+    </header>
+    <main class="app-scroll-content">
+      <div class="ui-card" style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <h4 style="font-size: 0.8rem; font-weight: 700;">🎟️ Voucher 50K Xịt Mũi Sinufresh</h4>
+            <p style="font-size: 0.65rem; color: var(--muted); margin-top: 2px;">Voucher đổi bằng xu tích luỹ từ hành động bảo vệ hệ hô hấp.</p>
+          </div>
+          <span style="font-size: 0.85rem; font-weight: bold; color: var(--orange);">500 Xu</span>
+        </div>
+        <button class="ui-btn ui-btn-primary" style="font-size: 0.75rem; padding: 10px;" onclick="redeemVoucher(this, 500)">ĐỔI VOUCHER NGAY</button>
+      </div>
+    </main>
+    <nav class="app-tabbar">
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[2].click()"><span class="tab-icon">🏠</span><span class="tab-label">Trang chủ</span></div>
+      <div class="tab-item" onclick="document.querySelectorAll('.preview-btn')[5].click()"><span class="tab-icon">📊</span><span class="tab-label">Tổng kết</span></div>
+      <div class="tab-item active"><span class="tab-icon">🎁</span><span class="tab-label">Đổi thưởng</span></div>
+    </nav>
+  </div>
+</div>
+
+<!-- ═══════════════════ LIVE INTERACTIVE PROTOTYPE LOGIC ═══════════════════ -->
+<script>
+let masterCoins = 750;
+let isScanRewarded = false;
+
+const entMappingDatabase = {
+  haisan: {
+    name: "MÓN ĂN: LẨU HẢI SẢN (92%)",
+    risk: "⚠️ Nguy cơ kích ứng: NHÓM TRIỆU CHỨNG MŨI",
+    desc: "Thực phẩm chứa Histamine tự do. Theo khảo sát bạn dễ ngứa họng và ngạt mũi sau ăn, món ăn này sẽ tăng nguy cơ sung huyết niêm mạc xoang.",
+    action: "💡 Khuyên dùng: Sử dụng nước lọc ấm sau ăn. Hãy dùng bình xịt rửa mũi trước khi đi ngủ tối nay để trung hoà dị nguyên bám dính."
+  },
+  dalanh: {
+    name: "ĐỒ UỐNG: NƯỚC ĐÁ LẠNH (96%)",
+    risk: "⚠️ Nguy cơ kích ứng: NHÓM HO / RÁT HỌNG ĐÊM",
+    desc: "Nhiệt độ thấp làm co mao mạch hầu họng đột ngột, làm tê liệt lông chuyển tuyến niêm mạc. Trực tiếp kích hoạt cơn ho rát kịch phát vào ban đêm mà bạn đã đánh dấu trong bản khảo sát.",
+    action: "💡 Khuyên dùng: Giữ ấm vùng cổ họng. Ngậm một ngụm nước ấm nhỏ ngay lập tức để làm ấm lại khu vực vòm họng."
+  }
+};
+
+function updateAllCoinDisplays() {
+  const ids = ['coin-morn', 'coin-noon', 'coin-night', 'coin-week', 'coin-market'];
+  ids.forEach(id => {
+    const element = document.getElementById(id);
+    if(element) {
+      element.innerText = masterCoins;
+      element.style.transform = "scale(1.2)";
+      setTimeout(() => element.style.transform = "scale(1)", 150);
+    }
+  });
+}
+
+function switchScreen(screenId, btnElement) {
+  const screens = document.querySelectorAll('.app-viewport');
+  screens.forEach(scr => scr.classList.remove('active-screen'));
+  
+  const targetScreen = document.getElementById(screenId);
+  if(targetScreen) targetScreen.classList.add('active-screen');
+
+  const buttons = document.querySelectorAll('.preview-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
+  
+  if(btnElement) {
+    btnElement.classList.add('active');
+  } else {
+    const targetIndex = {
+      'scr-survey-1': 0, 'scr-profile-loading': 1,
+      'scr-day-morning': 2, 'scr-day-noon': 3, 'scr-day-night': 4, 'scr-weekly-review': 5, 'scr-marketplace': 6
+    }[screenId];
+    if(targetIndex !== undefined) document.querySelectorAll('.preview-btn')[targetIndex].classList.add('active');
+  }
+
+  if(screenId === 'scr-profile-loading') {
+    const resultBox = document.getElementById('profile-result-text');
+    resultBox.innerHTML = "⏳ KHỞI TẠO HỆ THỐNG CẢM BIẾN...";
+    setTimeout(() => {
+      resultBox.innerHTML = "🎯 ĐỒNG BỘ PHẦN CỨNG THÀNH CÔNG:<br><br><span style='color:#38bdf8; font-size:0.75rem;'>1. Kết nối Định vị đo ô nhiễm & thời tiết.<br>2. Mở cổng Camera AI Lens tầm soát thực phẩm.<br>3. Kích hoạt Audio Mic lắng nghe tiếng thở ngáy ban đêm.</span><br><br>Đang chuyển hướng sang Nhật ký 24h...";
+      setTimeout(() => document.querySelectorAll('.preview-btn')[2].click(), 2500);
+    }, 1200);
+  }
+}
+
+function toggleCheck(element) {
+  const checkbox = element.querySelector('input[type="checkbox"]');
+  if(checkbox) checkbox.checked = !checkbox.checked;
+}
+
+function completeTaskRow(rowId, reward) {
+  const row = document.getElementById(rowId);
+  if(row && !row.classList.contains('is-done')) {
+    row.classList.add('is-done');
+    const coinBadge = row.querySelector('.reward-coin-trigger');
+    if(coinBadge) coinBadge.innerText = "✓ +" + reward;
+    
+    masterCoins += reward;
+    updateAllCoinDisplays();
+  }
+}
+
+function runEntScanner(foodKey) {
+  const data = entMappingDatabase[foodKey];
+  if(!data) return;
+
+  document.getElementById('res-food-name').innerText = data.name;
+  document.getElementById('res-ent-risk').innerText = data.risk;
+  document.getElementById('res-ent-desc').innerText = data.desc;
+  document.getElementById('res-ent-action').innerText = data.action;
+
+  const resultCard = document.getElementById('ent-scan-result');
+  resultCard.style.display = 'block';
+
+  if(!isScanRewarded) {
+    masterCoins += 50;
+    updateAllCoinDisplays();
+    isScanRewarded = true;
+  } else {
+    document.getElementById('scan-reward-text').innerText = "✓ Đã phân tích";
+  }
+}
+
+function claimNightlyBonus(button) {
+  masterCoins += 100;
+  updateAllCoinDisplays();
+  button.innerText = "✓ ĐÃ BẬT MIC AUDIO AI ĐO ĐÊM (+100)";
+  button.style.background = "var(--muted)";
+  button.disabled = true;
+}
+
+function claimWeeklyBonus(button) {
+  masterCoins += 450;
+  updateAllCoinDisplays();
+  button.innerText = "✓ ĐÃ NHẬN XU THƯỞNG TUẦN";
+  button.style.background = "var(--muted)";
+  button.disabled = true;
+}
+
+function redeemVoucher(button, cost) {
+  if (masterCoins >= cost) {
+    masterCoins -= cost;
+    updateAllCoinDisplays();
+    alert('Đổi voucher Sinufresh thành công! Mã QR giảm giá đã được đồng bộ vào ví phần thưởng.');
+  } else {
+    alert(`Không đủ xu! Thực hiện thêm các quét camera AI hoặc đo giấc ngủ đêm để tích luỹ thêm xu.`);
+  }
+}
+
+updateAllCoinDisplays();
+</script>
+
+</body>
+</html>

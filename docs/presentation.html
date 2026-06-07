@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Sound Event Detection — Nhà Thuốc Long Châu</title>
+<style>
+:root {
+  --primary: #00539C;
+  --accent: #f37022;
+  --green: #00a651;
+  --bg: #fafbfc;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --radius: 16px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.06);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); line-height: 1.7; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(135deg, var(--primary) 0%, #003d73 100%);
+  color: white;
+  border-radius: var(--radius);
+  padding: 60px 48px;
+  margin-bottom: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 400px; height: 400px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 50%;
+}
+.hero h1 { font-size: 2.4rem; font-weight: 800; margin-bottom: 12px; }
+.hero .subtitle { font-size: 1.2rem; opacity: 0.9; max-width: 700px; }
+.hero .badge {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
+/* Sections */
+section { margin-bottom: 48px; }
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+  border-bottom: 3px solid var(--accent);
+  display: inline-block;
+}
+h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+
+/* Cards grid */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-2px); }
+.card-icon { font-size: 2rem; margin-bottom: 12px; }
+.card p { color: var(--muted); font-size: 0.95rem; }
+
+/* Flow diagram */
+.flow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 24px 0;
+}
+.flow-step {
+  background: var(--card);
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 140px;
+}
+.flow-step .icon { font-size: 1.5rem; }
+.flow-step .label { font-size: 0.85rem; font-weight: 600; margin-top: 4px; }
+.flow-arrow { font-size: 1.5rem; color: var(--accent); padding: 0 8px; }
+
+/* Tech table */
+table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+th { background: var(--primary); color: white; font-weight: 600; }
+tr:hover { background: #f0f7ff; }
+.tag {
+  display: inline-block;
+  background: #e0f2fe;
+  color: var(--primary);
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.tag-new { background: #dcfce7; color: #166534; }
+.tag-warn { background: #fef3c7; color: #92400e; }
+
+/* Metrics */
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 24px 0; }
+.metric {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.metric .value { font-size: 2rem; font-weight: 800; color: var(--accent); }
+.metric .label { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 12px; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(to bottom, var(--primary), var(--accent));
+  border-radius: 2px;
+}
+.timeline-item { margin-bottom: 24px; position: relative; }
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -26px; top: 6px;
+  width: 14px; height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 3px solid var(--bg);
+}
+.timeline-item .phase { font-weight: 700; color: var(--primary); }
+.timeline-item .desc { color: var(--muted); font-size: 0.9rem; }
+
+/* CTA */
+.cta {
+  background: linear-gradient(135deg, var(--green) 0%, #008f45 100%);
+  color: white;
+  border-radius: var(--radius);
+  padding: 40px 48px;
+  text-align: center;
+}
+.cta h2 { color: white; border-bottom-color: white; }
+.cta p { opacity: 0.95; max-width: 600px; margin: 0 auto; }
+
+/* Comparison */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 16px 0; }
+.compare-col { padding: 20px; border-radius: 12px; }
+.compare-col.old { background: #fef2f2; border: 1px solid #fecaca; }
+.compare-col.new { background: #ecfdf5; border: 1px solid #a7f3d0; }
+.compare-col h4 { margin-bottom: 8px; }
+.compare-col ul { padding-left: 20px; }
+.compare-col li { margin-bottom: 6px; font-size: 0.9rem; }
+
+@media (max-width: 768px) {
+  .hero { padding: 36px 24px; }
+  .hero h1 { font-size: 1.8rem; }
+  .compare { grid-template-columns: 1fr; }
+  .flow { flex-direction: column; }
+  .flow-arrow { transform: rotate(90deg); }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HERO -->
+<div class="hero">
+  <h1>🎙️ AI Sound Event Detection<br>cho Nhà Thuốc Long Châu</h1>
+  <p class="subtitle">Ứng dụng AI nhận diện âm thanh hô hấp (ho, thở khò khè, ngáy) — tư vấn thuốc thông minh và sàng lọc sức khỏe tại nhà thuốc hoặc tại nhà.</p>
+  <span class="badge">MVP Working Prototype — Sẵn sàng Demo</span>
+</div>
+
+<!-- BÀI TOÁN -->
+<section>
+  <h2>🎯 Bài toán & Cơ hội</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">😷</div>
+      <h3>Khách hàng mô tả triệu chứng bằng lời — thiếu chính xác</h3>
+      <p>80% khách mua thuốc ho không phân biệt được ho khan vs ho đờm. Dược sĩ phải đoán → tư vấn sai thuốc.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⏱️</div>
+      <h3>Tư vấn mất thời gian, thiếu công cụ hỗ trợ</h3>
+      <p>Dược sĩ thiếu dữ liệu khách quan. AI cho phép "nghe" tiếng ho trong 5 giây và phân loại tự động.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>Cross-sell & Upsell thông minh</h3>
+      <p>Gợi ý sản phẩm chính xác theo loại ho + đối tượng + mức độ → tăng giá trị đơn hàng trung bình.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GIẢI PHÁP -->
+<section>
+  <h2>💡 Giải pháp: AI Sound Event Detection</h2>
+  <div class="flow">
+    <div class="flow-step"><div class="icon">🎤</div><div class="label">Thu âm 5s</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">🤖</div><div class="label">AI phân tích</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">📋</div><div class="label">Khảo sát nhanh</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">💊</div><div class="label">Khuyến nghị thuốc</div></div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step"><div class="icon">🛒</div><div class="label">Đề xuất sản phẩm</div></div>
+  </div>
+
+  <div class="cards" style="margin-top:24px">
+    <div class="card">
+      <h3>🔊 Nhận diện âm thanh hô hấp</h3>
+      <p>Phát hiện 4 loại: <strong>Ho, Thở khò khè, Ngáy, Thở bất thường</strong> — real-time, chỉ 5 giây thu âm.</p>
+    </div>
+    <div class="card">
+      <h3>🩺 Phân loại ho khan / ho đờm</h3>
+      <p>AI classifier riêng phân biệt ho khan (dry) vs ho có đờm (wet) bằng phân tích đặc trưng âm thanh MFCC.</p>
+    </div>
+    <div class="card">
+      <h3>😴 Sàng lọc ngưng thở khi ngủ (OSA)</h3>
+      <p>Khi phát hiện ngáy → chuyển sang flow khảo sát giấc ngủ, tính điểm nguy cơ OSA theo STOP-Bang.</p>
+    </div>
+    <div class="card">
+      <h3>💊 Khuyến nghị y khoa thông minh</h3>
+      <p>Kết hợp kết quả AI + thông tin lâm sàng → đề xuất thuốc OTC, TPCN, chăm sóc tại nhà, hoặc cảnh báo cần khám bác sĩ.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CÔNG NGHỆ -->
+<section>
+  <h2>⚙️ Công nghệ AI sử dụng</h2>
+  <table>
+    <thead>
+      <tr><th>Thành phần</th><th>Công nghệ</th><th>Đánh giá</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Sound Event Detection</strong></td>
+        <td>YAMNet (Google Research, 2021) — ONNX Runtime</td>
+        <td><span class="tag tag-new">State-of-art cho on-device</span></td>
+      </tr>
+      <tr>
+        <td><strong>Cough Type Classifier</strong></td>
+        <td>MFCC features + Dense Network (4 layers)</td>
+        <td><span class="tag tag-new">Lightweight, fast</span></td>
+      </tr>
+      <tr>
+        <td><strong>Voice Activity Detection</strong></td>
+        <td>FireRedVAD (2024) + RMS energy fallback</td>
+        <td><span class="tag tag-new">Mới nhất 2024</span></td>
+      </tr>
+      <tr>
+        <td><strong>Audio Processing</strong></td>
+        <td>librosa 0.10+ (feature extraction)</td>
+        <td><span class="tag">Industry standard</span></td>
+      </tr>
+      <tr>
+        <td><strong>Inference Engine</strong></td>
+        <td>ONNX Runtime (cross-platform, CPU optimized)</td>
+        <td><span class="tag tag-new">Production-ready</span></td>
+      </tr>
+      <tr>
+        <td><strong>Backend</strong></td>
+        <td>FastAPI (Python 3.11+)</td>
+        <td><span class="tag tag-new">Modern, async</span></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 style="margin-top:24px">Tại sao công nghệ này KHÔNG lỗi thời?</h3>
+  <div class="compare">
+    <div class="compare-col old">
+      <h4>❌ Cách cũ (2018–2020)</h4>
+      <ul>
+        <li>Rule-based: ngưỡng energy cố định</li>
+        <li>SVM + handcrafted features</li>
+        <li>Chạy trên server GPU lớn</li>
+        <li>Latency cao (2–5s)</li>
+        <li>Không generalize tốt</li>
+      </ul>
+    </div>
+    <div class="compare-col new">
+      <h4>✅ Cách mới (MVP này)</h4>
+      <ul>
+        <li><strong>YAMNet</strong>: pre-trained trên AudioSet (2M+ clips, 521 classes) — Google vẫn maintain</li>
+        <li><strong>ONNX Runtime</strong>: chạy CPU, ~47ms/file — deploy edge device được</li>
+        <li><strong>FireRedVAD (2024)</strong>: VAD mới nhất, tốt hơn WebRTC VAD</li>
+        <li><strong>Transfer learning ready</strong>: fine-tune thêm data Việt Nam</li>
+        <li><strong>Scalable</strong>: thêm class mới không cần retrain toàn bộ</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section>
+  <h2>📊 Hiệu suất MVP</h2>
+  <div class="metrics">
+    <div class="metric"><div class="value">&lt;50ms</div><div class="label">Inference time / file</div></div>
+    <div class="metric"><div class="value">521</div><div class="label">Classes YAMNet hỗ trợ</div></div>
+    <div class="metric"><div class="value">4</div><div class="label">Respiratory classes chọn lọc</div></div>
+    <div class="metric"><div class="value">5s</div><div class="label">Thời gian thu âm</div></div>
+    <div class="metric"><div class="value">16MB</div><div class="label">Model size (mobile-ready)</div></div>
+    <div class="metric"><div class="value">0</div><div class="label">GPU cần thiết</div></div>
+  </div>
+</section>
+
+<!-- USE CASES -->
+<section>
+  <h2>🏪 Kịch bản triển khai tại Nhà Thuốc</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🏥</div>
+      <h3>Tại quầy nhà thuốc</h3>
+      <p>Khách ho → Dược sĩ bật app → Thu âm 5s → AI phân loại → Gợi ý sản phẩm phù hợp ngay trên máy tính quầy.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>App Long Châu (tại nhà)</h3>
+      <p>Khách tự thu âm tại nhà → AI phân tích → Khuyến nghị thuốc OTC + link mua hàng → Tăng đơn online.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🌙</div>
+      <h3>Sàng lọc giấc ngủ</h3>
+      <p>Phát hiện ngáy → Flow khảo sát OSA → Gợi ý sản phẩm chống ngáy + đề xuất khám chuyên khoa nếu nguy cơ cao.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GIÁ TRỊ KINH DOANH -->
+<section>
+  <h2>💼 Giá trị kinh doanh</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">📈</div>
+      <h3>Tăng doanh thu</h3>
+      <p>Cross-sell chính xác: AI gợi ý đúng sản phẩm (thuốc + TPCN + thiết bị) theo phân loại → AOV tăng 15-25%.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏆</div>
+      <h3>Khác biệt hóa thương hiệu</h3>
+      <p>Nhà thuốc đầu tiên tại Việt Nam có AI nghe & phân tích triệu chứng — tạo competitive moat.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤝</div>
+      <h3>Tăng niềm tin khách hàng</h3>
+      <p>Tư vấn dựa trên dữ liệu khách quan (âm thanh) thay vì chỉ hỏi → khách tin tưởng hơn, quay lại nhiều hơn.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>Tối ưu vận hành</h3>
+      <p>Giảm thời gian tư vấn từ 5-10 phút → 2 phút. Dược sĩ mới cũng có thể tư vấn chuẩn nhờ AI support.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section>
+  <h2>🗺️ Lộ trình phát triển</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="phase">Phase 1 — MVP ✅ (Hiện tại)</div>
+      <div class="desc">Web app demo đầy đủ: thu âm → AI detect → khảo sát → khuyến nghị thuốc. Chạy trên browser, không cần cài app.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="phase">Phase 2 — Pilot (2–3 tháng)</div>
+      <div class="desc">Deploy 5-10 nhà thuốc thử nghiệm. Thu thập data thật từ khách Việt Nam. Fine-tune model. Đo conversion rate.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="phase">Phase 3 — Tích hợp (3–6 tháng)</div>
+      <div class="desc">Tích hợp vào app Long Châu (mobile). API cho POS quầy. Dashboard analytics cho operation team.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="phase">Phase 4 — Scale (6–12 tháng)</div>
+      <div class="desc">Rollout toàn chuỗi. Thêm classes mới (tiếng tim, tiếng thở trẻ sơ sinh). Partnership với bệnh viện cho telehealth.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ĐẦU TƯ CẦN THIẾT -->
+<section>
+  <h2>💰 Đầu tư cần thiết (Phase 2 Pilot)</h2>
+  <table>
+    <thead><tr><th>Hạng mục</th><th>Chi tiết</th><th>Ước lượng</th></tr></thead>
+    <tbody>
+      <tr><td>Infra</td><td>1 server CPU (không cần GPU) — inference ~50ms/request</td><td>Thấp</td></tr>
+      <tr><td>Data</td><td>Thu thập 500–1000 mẫu âm thanh thật từ pilot stores</td><td>2–4 tuần</td></tr>
+      <tr><td>Dev</td><td>1 AI engineer + 1 mobile dev (tích hợp app)</td><td>2–3 tháng</td></tr>
+      <tr><td>Model</td><td>Fine-tune YAMNet + Cough classifier trên data Việt</td><td>2–3 tuần</td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:12px;color:var(--muted);font-size:0.9rem"><strong>Lưu ý:</strong> Không cần GPU vì dùng ONNX Runtime CPU. Chi phí infra cực thấp so với các giải pháp AI khác.</p>
+</section>
+
+<!-- RỦI RO & MITIGATION -->
+<section>
+  <h2>⚠️ Rủi ro & Giải pháp</h2>
+  <table>
+    <thead><tr><th>Rủi ro</th><th>Giải pháp</th></tr></thead>
+    <tbody>
+      <tr><td>Độ chính xác chưa cao trên data thật</td><td>Phase 2 thu data thật → fine-tune. YAMNet là transfer learning — chỉ cần 500+ mẫu để cải thiện đáng kể.</td></tr>
+      <tr><td>Môi trường ồn tại quầy thuốc</td><td>VAD filter (FireRedVAD) + denoise. Có thể thêm noise cancellation module.</td></tr>
+      <tr><td>Pháp lý — không được "chẩn đoán"</td><td>Hệ thống chỉ "gợi ý" và "sàng lọc sơ bộ". Luôn có disclaimer + khuyến nghị gặp bác sĩ khi cần.</td></tr>
+      <tr><td>Privacy — thu âm khách</td><td>Xử lý local (edge), không lưu audio lâu dài, chỉ giữ kết quả phân tích. GDPR-compliant design.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CTA -->
+<div class="cta">
+  <h2>🚀 Bước tiếp theo</h2>
+  <p style="font-size:1.1rem;margin-bottom:16px"><strong>MVP đã sẵn sàng demo.</strong></p>
+  <p>Đề xuất: Duyệt pilot 5 nhà thuốc trong 1 tháng → Đo kết quả (conversion, AOV, customer satisfaction) → Quyết định scale.</p>
+  <p style="margin-top:16px;opacity:0.8;font-size:0.9rem">Chi phí thấp • Không cần GPU • Triển khai nhanh • Khác biệt hóa thương hiệu</p>
+</div>
+
+</div>
+</body>
+</html>

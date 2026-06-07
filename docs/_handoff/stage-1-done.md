@@ -1,37 +1,83 @@
-# Stage 1 Done — Data Pipeline + Model Setup
+# Stage 1 Done — Backend Core APIs
 
-## Files Created
-- `data_pipeline/crawl_tiengdong.py` — Crawl script with fallback synthetic generation
-- `backend/requirements.txt` — 11 pinned dependencies
-- `backend/download_model.py` — HuggingFace model downloader
-- `backend/models/yamnet.onnx` — 16,124,200 bytes
-- `backend/models/yamnet_class_map.csv` — 522 rows (521 classes + header)
-- `backend/storage/raw/` — directory (empty, crawl site unavailable)
-- `backend/storage/real_wav/` — 12 .wav files (synthetic fallback)
+> Completed: 2026-06-05
 
-## WAV Files Generated (12 total)
-- cough_01.wav through cough_04.wav
-- breathing_01.wav through breathing_04.wav
-- snoring_01.wav through snoring_04.wav
-- All: 16kHz, mono, 3-8 seconds duration
+## API Endpoints Created
 
-## Model Files
-- yamnet.onnx: 16,124,200 bytes (16MB)
-- yamnet_class_map.csv: 522 rows, columns: index, mid, display_name
+| Method | Path | Request | Response |
+|--------|------|---------|----------|
+| POST | /api/v1/user/intake | `{name, disease_tags[], symptoms[], vitals{}, lat, long, device_token}` | `{id, ...profile, message_vi}` |
+| GET | /api/v1/user/profile/{user_id} | — | `{...full UserProfile}` |
+| POST | /api/v1/user/device-token | `{user_id, device_token}` | `{success, message_vi}` |
+| GET | /api/v1/context/{user_id} | — | `{temperature, humidity, pm25, aqi, timestamp, location_name, health_context{}}` |
+| POST | /api/sleep-assessment | `{snoring_freq, daytime_sleepiness, apnea_observed, body_type, sleep_symptoms[]}` | `{classification, risk_score, recommendations[], warnings[], should_see_doctor}` |
+| POST | /api/v1/alerts/evaluate | `{user_id, context_data?}` | `{user_id, alerts[], count}` |
 
-## Dependencies Installed
-- pip install -r backend/requirements.txt: SUCCESS
-- Key versions: fastapi>=0.115.0, onnxruntime>=1.21.0, librosa>=0.10.2, fireredvad>=0.0.1
+## Existing Endpoints (unchanged)
 
-## Exit Gates
-- [x] crawl script runs successfully
-- [x] ≥10 .wav files in backend/storage/real_wav/
-- [x] All .wav files: 16kHz mono
-- [x] yamnet.onnx exists (>5MB)
-- [x] yamnet_class_map.csv exists (521+ rows)
-- [x] pip install succeeds
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST | /api/analyze | Audio analysis (YAMNet + CoughTypeV2) |
+| POST | /api/recommendation | Cough recommendation engine |
+| GET | /api/recommendation/options | Form options for assessment |
+| GET | /api/samples | List sample WAV files |
+| GET | /api/samples/{filename} | Download sample WAV |
 
-## Notes
-- tiengdong.com was unreachable; fallback synthetic audio generated
-- Synthetic files use sine waves + noise to simulate cough/breathing/snoring patterns
-- Model downloaded directly from HuggingFace CDN
+## DB Schema
+
+UserProfile stored in `backend/storage/users.json`:
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "device_token": "string",
+  "lat": 0.0,
+  "long": 0.0,
+  "disease_tags": ["ENT", "Gout", "Diabetes_T2", "Hypertension"],
+  "symptoms": ["string"],
+  "vitals": {},
+  "created_at": "ISO 8601"
+}
+```
+
+## Rule Config Format
+
+`backend/config/rules.json`:
+- Rules: conditions (field/operator/value) + template_id + priority
+- Templates: title (Vietnamese) + body + deeplink
+- Operators: gt, lt, gte, lte, eq, contains
+
+## Dependencies Added
+
+- httpx>=0.27.0 (async HTTP client for OpenWeatherMap)
+- firebase-admin (optional, mock mode when not installed)
+
+## Environment Variables
+
+| Var | Default | Purpose |
+|-----|---------|---------|
+| OPENWEATHERMAP_API_KEY | "" (mock mode) | Weather + Air Quality API |
+| FIREBASE_CREDENTIALS_PATH | "" (mock mode) | FCM push notifications |
+
+## Context7 Versions Verified
+
+- FastAPI 0.115+ (async patterns, APIRouter, Pydantic V2)
+- httpx 0.27+ (async client)
+- firebase-admin 6.x (FCM v1 API)
+
+## Files Created/Modified
+
+- backend/models/user.py
+- backend/routes/__init__.py
+- backend/routes/intake.py
+- backend/routes/context.py
+- backend/routes/sleep.py
+- backend/routes/alerts.py
+- backend/services/__init__.py
+- backend/services/context_aggregator.py
+- backend/services/rule_engine.py
+- backend/services/alert_dispatcher.py
+- backend/config/__init__.py
+- backend/config/rules.json
+- backend/app.py (updated — added CORS + 4 routers)
+- backend/requirements.txt (added httpx)

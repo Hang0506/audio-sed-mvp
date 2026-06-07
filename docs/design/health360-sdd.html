@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>AI Health 360 — Software Design Document</title>
+<style>
+:root { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --muted: #94a3b8; --accent: #38bdf8; --teal: #14b8a6; --orange: #f97316; --red: #ef4444; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 900px; margin: 0 auto; }
+h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+h2 { font-size: 1.4rem; margin-top: 2rem; color: var(--accent); border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+h3 { font-size: 1.1rem; margin-top: 1.5rem; color: var(--teal); }
+p, li { color: var(--muted); margin: 0.5rem 0; }
+code { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+pre { background: var(--card); padding: 1rem; border-radius: 8px; overflow-x: auto; margin: 1rem 0; }
+table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+th, td { padding: 0.5rem; border: 1px solid #334155; text-align: left; font-size: 0.9rem; }
+th { background: var(--card); color: var(--accent); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+.done { background: #14b8a620; color: var(--teal); }
+.tag { background: #38bdf820; color: var(--accent); }
+</style>
+</head>
+<body>
+<h1>AI Health 360 — Software Design Document</h1>
+<p>Generated: 2026-06-05 | Stages: 4 | Tasks: 22/22 complete</p>
+
+<h2>Architecture Overview</h2>
+<pre>
+[iOS App (SwiftUI)] ──HTTP──► [FastAPI Backend (Python)]
+      │                              │
+      ├── /api/v1/user/intake        ├── User Storage (JSON)
+      ├── /api/v1/context/{id}       ├── OpenWeatherMap API
+      ├── /api/sleep-assessment      ├── YAMNet ONNX (audio)
+      ├── /api/analyze               ├── CoughType V2 (MFCC)
+      ├── /api/recommendation        ├── Sleep OSA Screening
+      ├── /api/food-scan             ├── YOLOv10 ONNX (food)
+      ├── /api/v1/order/create       ├── Health Risk Engine
+      └── /api/v1/alerts/evaluate    └── Rule Engine + FCM
+</pre>
+
+<h2>Backend Design Decisions</h2>
+<h3>Storage</h3>
+<p>MVP uses JSON files (backend/storage/) — no external DB. Acceptable for 200-500 beta users. Migrate to PostgreSQL/SQLite for Phase 2.</p>
+
+<h3>Mock Mode Strategy</h3>
+<p>Every external dependency has graceful mock fallback:</p>
+<table>
+<tr><th>Service</th><th>Env Var</th><th>Mock Behavior</th></tr>
+<tr><td>OpenWeatherMap</td><td>OPENWEATHERMAP_API_KEY</td><td>Returns HCM defaults (PM2.5=85, 32°C, 78%)</td></tr>
+<tr><td>Firebase FCM</td><td>FIREBASE_CREDENTIALS_PATH</td><td>Logs alert, returns success</td></tr>
+<tr><td>YOLOv10 Food</td><td>(model file existence)</td><td>Returns 1-3 random Vietnamese foods</td></tr>
+<tr><td>Telegram Bot</td><td>TELEGRAM_BOT_TOKEN</td><td>Logs push intent only</td></tr>
+</table>
+
+<h3>Rule Engine</h3>
+<p>JSON-configurable rules at <code>backend/config/rules.json</code>. Supports operators: gt, lt, gte, lte, eq, contains. No code deploy needed to add rules.</p>
+
+<h3>Health Risk Engine</h3>
+<p>Cross-references detected foods against user disease_tags + purine_db.json. Alerts: Gout+purine, Diabetes+sugar, Hypertension+salt, ENT+spicy.</p>
+
+<h2>iOS Design Decisions</h2>
+<h3>Architecture</h3>
+<p>MVVM-lite with @State/@StateObject. NavigationStack (iOS 16+). Dark mode only for MVP.</p>
+
+<h3>Design System</h3>
+<p>11 color tokens, 4 font sizes, 5 spacing values. All from <code>DesignSystem.swift</code>. Reusable components: CircularGauge, AlertCard, ContextTile, BadgeTag, TaskCheckRow.</p>
+
+<h3>Audio Recording</h3>
+<p>MVP: Timer-based mock (5s countdown). Phase 2: AVAudioRecorder with 16kHz mono PCM → WAV → POST /api/analyze.</p>
+
+<h3>Food Camera</h3>
+<p>MVP: Mock capture (1s delay). Phase 2: AVCaptureSession → JPEG → POST /api/food-scan.</p>
+
+<h2>API Endpoints (10 total new)</h2>
+<table>
+<tr><th>Method</th><th>Path</th><th>Purpose</th></tr>
+<tr><td>POST</td><td>/api/v1/user/intake</td><td>User profile + disease tags</td></tr>
+<tr><td>GET</td><td>/api/v1/user/profile/{id}</td><td>Get user profile</td></tr>
+<tr><td>GET</td><td>/api/v1/context/{id}</td><td>Weather + PM2.5 data</td></tr>
+<tr><td>POST</td><td>/api/sleep-assessment</td><td>OSA screening</td></tr>
+<tr><td>POST</td><td>/api/v1/alerts/evaluate</td><td>Trigger rule evaluation</td></tr>
+<tr><td>POST</td><td>/api/food-scan</td><td>Food detection + nutrition</td></tr>
+<tr><td>POST</td><td>/api/v1/order/create</td><td>O2O order intent</td></tr>
+<tr><td>GET</td><td>/api/v1/order/{id}</td><td>Order status</td></tr>
+<tr><td>POST</td><td>/api/v1/analytics/event</td><td>Track analytics events</td></tr>
+<tr><td>POST</td><td>/api/v1/user/device-token</td><td>Update FCM token</td></tr>
+</table>
+
+<h2>Scope Verification</h2>
+<table>
+<tr><th>Task</th><th>Status</th></tr>
+<tr><td>BE-1 User Intake API</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-2 Context Aggregator</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-3 Rule Engine</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-4 Alert Dispatcher</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-5 Mock AI (Telegram)</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-6 O2O Checkout</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-7 Sleep Assessment API</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-8 Food Detection API</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>BE-9 Health Risk Engine</td><td><span class="badge done">✅ DONE</span></td></tr>
+<tr><td>FE-1 through FE-13 (all 13 screens)</td><td><span class="badge done">✅ DONE</span></td></tr>
+</table>
+
+<h2>Security Scan</h2>
+<p><span class="badge done">CLEAN</span> — No secrets, credentials, or PII found in new code. Pre-existing cert.pem/key.pem noted (dev HTTPS, not committed by us).</p>
+
+<h2>Tech Freshness</h2>
+<table>
+<tr><th>Library</th><th>Version Used</th><th>Status</th></tr>
+<tr><td>FastAPI</td><td>0.115+</td><td><span class="badge done">OK</span></td></tr>
+<tr><td>Pydantic</td><td>V2</td><td><span class="badge done">OK</span></td></tr>
+<tr><td>httpx</td><td>0.27+</td><td><span class="badge done">OK</span></td></tr>
+<tr><td>onnxruntime</td><td>1.21+</td><td><span class="badge done">OK</span></td></tr>
+<tr><td>SwiftUI</td><td>iOS 16+</td><td><span class="badge done">OK</span></td></tr>
+<tr><td>Swift Charts</td><td>iOS 16+</td><td><span class="badge done">OK</span></td></tr>
+<tr><td>Firebase iOS SDK</td><td>Latest via SPM</td><td><span class="badge done">OK</span></td></tr>
+</table>
+</body>
+</html>

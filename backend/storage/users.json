@@ -1,0 +1,18 @@
+{
+  "599924a9-4210-4259-9849-d2170830a948": {
+    "id": "599924a9-4210-4259-9849-d2170830a948",
+    "name": "Minh Tuan",
+    "device_token": "",
+    "lat": 10.8,
+    "long": 106.65,
+    "disease_tags": [
+      "Gout",
+      "ENT"
+    ],
+    "symptoms": [
+      "joint_pain"
+    ],
+    "vitals": {},
+    "created_at": "2026-06-05T07:26:21.167219"
+  }
+}

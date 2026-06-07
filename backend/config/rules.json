@@ -1,0 +1,54 @@
+{
+  "rules": [
+    {
+      "id": "RULE_ENT_PM25",
+      "name": "ENT patient high PM2.5 alert",
+      "name_vi": "Cảnh báo PM2.5 cao cho bệnh nhân Tai Mũi Họng",
+      "conditions": [
+        {"field": "disease_tags", "operator": "contains", "value": "ENT"},
+        {"field": "pm25", "operator": "gt", "value": 150}
+      ],
+      "template_id": "ALERT_ENT_PM25",
+      "priority": 1
+    },
+    {
+      "id": "RULE_GOUT_HUMIDITY",
+      "name": "Gout patient high humidity alert",
+      "name_vi": "Cảnh báo độ ẩm cao cho bệnh nhân Gout",
+      "conditions": [
+        {"field": "disease_tags", "operator": "contains", "value": "Gout"},
+        {"field": "humidity", "operator": "gt", "value": 85}
+      ],
+      "template_id": "ALERT_GOUT_HUMIDITY",
+      "priority": 2
+    },
+    {
+      "id": "RULE_DIABETES_HEAT",
+      "name": "Diabetes type 2 heat alert",
+      "name_vi": "Cảnh báo nắng nóng cho bệnh nhân Đái tháo đường type 2",
+      "conditions": [
+        {"field": "disease_tags", "operator": "contains", "value": "Diabetes_T2"},
+        {"field": "temperature", "operator": "gt", "value": 35}
+      ],
+      "template_id": "ALERT_DIABETES_HEAT",
+      "priority": 1
+    }
+  ],
+  "alert_templates": {
+    "ALERT_ENT_PM25": {
+      "title": "⚠️ Chất lượng không khí xấu",
+      "body": "Chỉ số PM2.5 đang rất cao (>150). Bạn có tiền sử bệnh Tai Mũi Họng — hãy đeo khẩu trang N95, hạn chế ra ngoài và rửa mũi bằng nước muối sinh lý.",
+      "deeplink": "longchau://health/air-quality"
+    },
+    "ALERT_GOUT_HUMIDITY": {
+      "title": "🌧️ Độ ẩm cao — Nguy cơ đợt Gout cấp",
+      "body": "Độ ẩm không khí >85% có thể kích hoạt cơn Gout. Hãy uống đủ nước, tránh thực phẩm giàu purine và theo dõi các khớp.",
+      "deeplink": "longchau://health/gout-care"
+    },
+    "ALERT_DIABETES_HEAT": {
+      "title": "🌡️ Nắng nóng — Lưu ý cho người Đái tháo đường",
+      "body": "Nhiệt độ >35°C có thể ảnh hưởng đến insulin và gây mất nước. Hãy uống nước thường xuyên, kiểm tra đường huyết nhiều hơn và bảo quản thuốc đúng cách.",
+      "deeplink": "longchau://health/diabetes-heat"
+    }
+  }
+}

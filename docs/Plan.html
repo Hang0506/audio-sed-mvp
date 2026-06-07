@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI HEALTH 360 — Production Plan v6 (Aligned with App Design)</title>
+<style>
+:root {
+  --bg: #090d16;
+  --card: #131c2e;
+  --text: #f8fafc;
+  --muted: #64748b;
+  --border: #1e293b;
+  --blue: #38bdf8;
+  --teal: #10b981;
+  --orange: #fb923c;
+  --purple: #a78bfa;
+  --red: #ef4444;
+}
+body { background: #020617; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; padding: 40px 20px; }
+.plan-container { max-width: 1000px; margin: 0 auto; }
+h1 { font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+h2 { font-size: 1.4rem; font-weight: 700; color: var(--blue); margin-top: 40px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+h3 { font-size: 1.1rem; font-weight: 700; margin-top: 24px; margin-bottom: 10px; }
+p, li { font-size: 0.92rem; opacity: 0.9; }
+ul { padding-left: 20px; margin-bottom: 16px; }
+li { margin-bottom: 6px; }
+blockquote { background: rgba(56,189,248,0.05); border-left: 4px solid var(--blue); padding: 16px; border-radius: 8px; margin: 20px 0; font-weight: 600; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }
+th, td { padding: 12px 16px; text-align: left; font-size: 0.88rem; }
+th { background: #0c1424; font-weight: 700; border-bottom: 2px solid var(--border); }
+td { border-bottom: 1px solid var(--border); }
+tr:last-child td { border-bottom: none; }
+pre { background: #0c1220; border: 1px solid var(--border); padding: 16px; border-radius: 8px; overflow-x: auto; font-family: monospace; font-size: 0.82rem; color: var(--blue); }
+code { background: #0c1220; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--orange); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; }
+.badge-real { background: rgba(16,185,129,0.15); color: var(--teal); }
+.badge-fake { background: rgba(239,68,68,0.15); color: var(--red); }
+.badge-new { background: rgba(56,189,248,0.15); color: var(--blue); }
+.screen-ref { color: var(--purple); font-weight: 600; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<div class="plan-container">
+
+<h1>🧬 AI HEALTH 360 — Production Plan v6</h1>
+<blockquote>
+  🎯 <strong>Mục tiêu</strong>: Build iOS app hoàn chỉnh theo đúng 7 màn hình trong <code>presentation-health360-app.html</code>.<br>
+  Validate User Behavior & Money Flow trong 4 tuần. Khảo sát multi-select → kích hoạt sensor phần cứng → gamified daily loop → đổi thưởng voucher Nhà Thuốc.
+</blockquote>
+
+<!-- ═══════════════════ APP ARCHITECTURE ═══════════════════ -->
+<h2>📱 Kiến Trúc App Theo Design Mới (7 Screens)</h2>
+
+<table>
+  <thead><tr><th>#</th><th>Màn Hình</th><th>Chức Năng Chính</th><th>Hardware/API</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td><strong>Khảo sát TAI-MŨI-HỌNG</strong></td><td>Multi-select triệu chứng → sinh <code>symptom_ids[]</code></td><td>—</td></tr>
+    <tr><td>2</td><td><strong>Đang Phân Tích</strong></td><td>Loading animation + kết nối API phần cứng</td><td>GPS, Mic, Camera permissions</td></tr>
+    <tr><td>3</td><td><strong>Sáng: Widget Thời Tiết</strong></td><td>Cảnh báo AQI/PM2.5 + nhiệm vụ nhận xu</td><td>CoreLocation + OpenWeatherMap</td></tr>
+    <tr><td>4</td><td><strong>Trưa: Camera AI Scanner</strong></td><td>Quét đồ ăn → cảnh báo dị nguyên ENT</td><td>AVFoundation + YOLOv10</td></tr>
+    <tr><td>5</td><td><strong>Đêm: Audio AI Ngủ Ngáy</strong></td><td>Thu âm mic → phát hiện ho/ngáy/thở dốc</td><td>AVAudioEngine + YAMNet</td></tr>
+    <tr><td>6</td><td><strong>Tổng Kết Tuần</strong></td><td>Before/After comparison + bonus xu</td><td>—</td></tr>
+    <tr><td>7</td><td><strong>Đổi Thưởng</strong></td><td>Danh sách voucher + quy đổi xu</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════ DATA FLOW ═══════════════════ -->
+<h2>⚙️ Luồng Dữ Liệu Hệ Thống</h2>
+
+<pre>
+[Screen 1: Khảo sát]
+  └─ symptom_ids: ["mui_hat_hoi_lanh", "hong_ho_khan_dem", ...]
+       │
+       ▼
+[Screen 2: Phân tích] ── Map symptom → hardware capability
+       │
+       ├─ "mui_hat_hoi_lanh"    → Enable GPS Weather Widget (Screen 3)
+       ├─ "mui_ngat_di_ung"     → Enable Camera AI Scanner (Screen 4)
+       ├─ "hong_ho_khan_dem"    → Enable Audio Mic Cough (Screen 5)
+       └─ "ngu_ngay_tho_mieng" → Enable Audio Snoring OSA (Screen 5)
+       │
+       ▼
+[Screen 3–5: Daily Loop] ── Complete tasks → Earn Coins
+       │
+       ▼
+[Screen 6: Weekly Report] ── Before/After metrics → Bonus Coins
+       │
+       ▼
+[Screen 7: Marketplace] ── Coins → Voucher Nhà Thuốc
+</pre>
+
+<!-- ═══════════════════ COMPONENT STATUS ═══════════════════ -->
+<h2>🎯 Trạng Thái Component</h2>
+
+<table>
+  <thead><tr><th>Component</th><th>Status</th><th>Chi Tiết</th></tr></thead>
+  <tbody>
+    <tr>
+      <td><strong>User Intake (Multi-select)</strong></td>
+      <td><span class="badge badge-real">Real</span></td>
+      <td>Form checkbox card phân nhóm Mũi / Họng-Tai. Lưu <code>symptom_ids[]</code> + auto-map <code>disease_tags</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Context Engine (Weather)</strong></td>
+      <td><span class="badge badge-real">Real</span></td>
+      <td>CoreLocation GPS → OpenWeatherMap API → AQI, PM2.5, nhiệt độ, độ ẩm. Trigger khi user có <code>"mui_hat_hoi_lanh"</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>AI Food Scanner</strong></td>
+      <td><span class="badge badge-real">Real</span></td>
+      <td>YOLOv10 (VietFood67, mAP50=0.92). Camera live viewfinder + cross-reference dị nguyên với <code>symptom_ids</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>AI Audio Engine</strong></td>
+      <td><span class="badge badge-real">Real — Đã Có</span></td>
+      <td>YAMNet ONNX + Cough V2 + OSA Screening. Backend FastAPI đã sẵn sàng. iOS ghi âm → POST WAV → nhận kết quả.</td>
+    </tr>
+    <tr>
+      <td><strong>Rule Engine</strong></td>
+      <td><span class="badge badge-real">Real</span></td>
+      <td>Map <code>symptom_id</code> → kích hoạt feature tương ứng. If/else hoặc JSON config.</td>
+    </tr>
+    <tr>
+      <td><strong>Gamification (Coins)</strong></td>
+      <td><span class="badge badge-fake">Fake UI</span></td>
+      <td>Xu cộng local. Chưa có ví thật/giao dịch backend. Đủ để validate hành vi user.</td>
+    </tr>
+    <tr>
+      <td><strong>Voucher Marketplace</strong></td>
+      <td><span class="badge badge-fake">Fake UI</span></td>
+      <td>Danh sách voucher hardcode. Hành động "đổi" chỉ trừ xu local + hiện thông báo.</td>
+    </tr>
+    <tr>
+      <td><strong>Weekly Report</strong></td>
+      <td><span class="badge badge-new">Phase 2</span></td>
+      <td>Cần tích lũy data 7 ngày. MVP hiện thị data mẫu; Phase 2 lấy data thật từ audio sessions.</td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════ TASK BREAKDOWN ═══════════════════ -->
+<h2>🛠️ Task Breakdown — Theo Màn Hình</h2>
+
+<h3>Screen 1–2: Onboarding & Intake</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FE-01</strong></td><td>UI Khảo sát multi-select: Checkbox Card phân nhóm 👃 Mũi / 🗣️👂 Họng-Tai. State: <code>Set&lt;String&gt; selectedSymptomIDs</code>. Hiệu ứng border highlight khi chọn.</td><td>1</td></tr>
+    <tr><td><strong>FE-02</strong></td><td>Loading screen animation: spinner + text sequence ("Khởi tạo cảm biến..." → "Đồng bộ phần cứng thành công") → auto-navigate sang Home.</td><td>1</td></tr>
+    <tr><td><strong>BE-01</strong></td><td>API <code>POST /api/intake</code>: Nhận <code>symptom_ids[]</code>, lưu profile, trả về <code>enabled_features[]</code> (weather/camera/audio).</td><td>1</td></tr>
+  </tbody>
+</table>
+
+<h3>Screen 3: Buổi Sáng — Weather Widget</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FE-03</strong></td><td>Header gamified: avatar + tên + disease tag + coin badge (cam, glow animation khi tăng).</td><td>1</td></tr>
+    <tr><td><strong>FE-04</strong></td><td>Card cảnh báo thời tiết: border-left cam, hiển thị % nguy cơ kích ứng + AQI + mô tả ngắn. Conditional render khi user có <code>"mui_hat_hoi_lanh"</code>.</td><td>1</td></tr>
+    <tr><td><strong>FE-05</strong></td><td>Habit task row: tap để complete → animation strike-through + coin badge chuyển xanh + master coin tăng.</td><td>1</td></tr>
+    <tr><td><strong>BE-02</strong></td><td>API <code>GET /api/weather-risk</code>: Nhận GPS coord → gọi OpenWeatherMap → tính risk % dựa trên humidity drop + PM2.5 threshold.</td><td>1</td></tr>
+  </tbody>
+</table>
+
+<h3>Screen 4: Buổi Trưa — Camera AI Scanner</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FE-06</strong></td><td>Camera viewfinder UI: corner brackets + scan line animation + "LENS LIVE" pulse badge. Conditional render khi user có <code>"mui_ngat_di_ung"</code>.</td><td>1</td></tr>
+    <tr><td><strong>FE-07</strong></td><td>Quick-select food buttons (demo): "Lẩu Hải Sản", "Nước Đá Lạnh" → trigger scan result card.</td><td>1</td></tr>
+    <tr><td><strong>FE-08</strong></td><td>Scan result card: food name badge + risk text (đỏ) + mô tả + action box (xanh). Coin reward khi scan lần đầu.</td><td>1</td></tr>
+    <tr><td><strong>BE-03</strong></td><td>API <code>POST /api/food-scan</code>: Nhận image/food_id → YOLOv10 detect → cross-reference allergen vs user <code>symptom_ids</code> → trả risk + recommendation.</td><td>1</td></tr>
+  </tbody>
+</table>
+
+<h3>Screen 5: Buổi Đêm — Audio AI Monitor</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FE-09</strong></td><td>Audio AI card: purple accent, "MIC ACTIVE" pulse, mô tả chức năng. Waveform visualization (5 bars pulse animation). Conditional khi user có <code>"hong_*"</code> hoặc <code>"ngu_ngay_*"</code>.</td><td>1</td></tr>
+    <tr><td><strong>FE-10</strong></td><td>CTA button "Kích hoạt đo đêm": tap → request mic permission → start background recording → +100 coins.</td><td>1</td></tr>
+    <tr><td><strong>BE-04</strong></td><td>API <code>POST /api/audio/analyze</code>: Nhận WAV chunk → YAMNet classify (ho/ngáy/thở) → trả event timeline.</td><td>1</td></tr>
+    <tr><td><strong>BE-05</strong></td><td>API <code>POST /api/audio/sleep-session</code>: Aggregate overnight events → compute cough_count, snore_minutes, breathing_quality.</td><td>2</td></tr>
+  </tbody>
+</table>
+
+<h3>Screen 6: Tổng Kết Tuần</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FE-11</strong></td><td>Before/After comparison grid: 2 cột (tuần trước → hiện tại), hiển thị cơn ho/đêm + phút ngáy. Màu đỏ→xanh khi cải thiện.</td><td>2</td></tr>
+    <tr><td><strong>FE-12</strong></td><td>Weekly bonus card: hiển thị tổng xu tuần (cam, font lớn) + CTA "Thu hoạch phần thưởng tuần".</td><td>2</td></tr>
+    <tr><td><strong>BE-06</strong></td><td>API <code>GET /api/weekly-report</code>: Aggregate 7 ngày audio sessions → compute delta vs tuần trước.</td><td>2</td></tr>
+  </tbody>
+</table>
+
+<h3>Screen 7: Đổi Thưởng (Marketplace)</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>FE-13</strong></td><td>Danh sách voucher card: tên + mô tả + giá xu. Button "Đổi voucher ngay" → check balance → trừ xu hoặc alert thiếu.</td><td>2</td></tr>
+    <tr><td><strong>FE-14</strong></td><td>Tab bar navigation: 3 tabs (Trang chủ / Tổng kết / Đổi thưởng) — active state highlight blue.</td><td>1</td></tr>
+  </tbody>
+</table>
+
+<h3>Cross-cutting</h3>
+<table>
+  <thead><tr><th>Task</th><th>Mô tả</th><th>Sprint</th></tr></thead>
+  <tbody>
+    <tr><td><strong>INFRA-01</strong></td><td>SwiftUI project setup: SPM packages (Alamofire, SwiftUI-Introspect). MVVM + Combine. Design tokens file matching CSS vars.</td><td>1</td></tr>
+    <tr><td><strong>INFRA-02</strong></td><td>Local coin state: <code>@AppStorage("masterCoins")</code> + <code>CoinManager</code> singleton. Animation on change.</td><td>1</td></tr>
+    <tr><td><strong>INFRA-03</strong></td><td>Feature gate: <code>FeatureGateService</code> đọc <code>enabled_features[]</code> từ profile → show/hide widgets theo symptom.</td><td>1</td></tr>
+    <tr><td><strong>INFRA-04</strong></td><td>Backend deploy: FastAPI (existing) trên Railway/Render. Add endpoints mới (intake, weather-risk, food-scan, audio).</td><td>1</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════ SPRINT PLAN ═══════════════════ -->
+<h2>📅 Sprint Plan</h2>
+
+<h3>Sprint 1 (Tuần 1–2): Core Loop</h3>
+<blockquote>Deliverable: User mở app → khảo sát → thấy home dashboard với weather/camera/audio → hoàn thành task → nhận xu.</blockquote>
+<ul>
+  <li>FE-01 → FE-10, FE-14</li>
+  <li>BE-01 → BE-04</li>
+  <li>INFRA-01 → INFRA-04</li>
+</ul>
+
+<h3>Sprint 2 (Tuần 3–4): Retention & Monetization</h3>
+<blockquote>Deliverable: User quay lại xem tuần report + đổi xu lấy voucher Nhà Thuốc.</blockquote>
+<ul>
+  <li>FE-11 → FE-13</li>
+  <li>BE-05, BE-06</li>
+  <li>TestFlight beta + analytics tracking</li>
+</ul>
+
+<!-- ═══════════════════ TECH STACK ═══════════════════ -->
+<h2>🔧 Tech Stack</h2>
+
+<table>
+  <thead><tr><th>Layer</th><th>Technology</th><th>Ghi chú</th></tr></thead>
+  <tbody>
+    <tr><td>Mobile</td><td>SwiftUI (iOS 16+)</td><td>MVVM + Combine, dark-mode first</td></tr>
+    <tr><td>Backend</td><td>Python FastAPI</td><td>Đã có sẵn audio engine, thêm endpoints mới</td></tr>
+    <tr><td>AI Audio</td><td>YAMNet ONNX + Cough V2 + OSA</td><td>Backend-side inference, gửi WAV lên</td></tr>
+    <tr><td>AI Food</td><td>YOLOv10 (VietFood67)</td><td>67 món, mAP50=0.92</td></tr>
+    <tr><td>Weather</td><td>OpenWeatherMap API</td><td>Free tier đủ cho MVP</td></tr>
+    <tr><td>Storage</td><td>UserDefaults + Backend DB</td><td>Coins local, profile/sessions server-side</td></tr>
+    <tr><td>Deploy</td><td>Railway / Render</td><td>FastAPI backend, auto-deploy from git</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════ EXISTING BACKEND ═══════════════════ -->
+<h2>✅ Backend Đã Có (Tận Dụng Ngay)</h2>
+
+<table>
+  <thead><tr><th>Module</th><th>File</th><th>API</th><th>Status</th></tr></thead>
+  <tbody>
+    <tr><td>YAMNet ONNX</td><td><code>yamnet_inference.py</code></td><td><code>POST /api/analyze</code></td><td>✅ Ready</td></tr>
+    <tr><td>Cough Type V2</td><td><code>cough_type_v2.py</code></td><td><code>POST /api/analyze?mode=v2</code></td><td>✅ Ready</td></tr>
+    <tr><td>Cough Recommendation</td><td><code>cough_recommendation.py</code></td><td><code>POST /api/recommendation</code></td><td>✅ Ready</td></tr>
+    <tr><td>Sleep/OSA Screening</td><td><code>sleep_recommendation.py</code></td><td>Cần expose endpoint mới</td><td>🟡 Cần thêm</td></tr>
+    <tr><td>VAD Filter</td><td><code>vad_filter.py</code></td><td>Internal</td><td>✅ Ready</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════ KEY METRICS ═══════════════════ -->
+<h2>📊 Metrics Cần Đo (4 tuần MVP)</h2>
+
+<table>
+  <thead><tr><th>Metric</th><th>Target</th><th>Đo bằng</th></tr></thead>
+  <tbody>
+    <tr><td>Onboarding completion rate</td><td>≥ 80%</td><td>Screen 1 → Screen 3 conversion</td></tr>
+    <tr><td>Daily active task completion</td><td>≥ 1 task/ngày/user</td><td>Habit row tap events</td></tr>
+    <tr><td>Audio night session activation</td><td>≥ 3 đêm/tuần/user</td><td>Mic recording sessions</td></tr>
+    <tr><td>Camera scan usage</td><td>≥ 2 lần/tuần/user</td><td>Food scan API calls</td></tr>
+    <tr><td>Weekly retention</td><td>≥ 60% W1→W2</td><td>App open events</td></tr>
+    <tr><td>Voucher redemption rate</td><td>≥ 30% users thử đổi</td><td>Redeem button taps</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════ RISK & FAKE/REAL ═══════════════════ -->
+<h2>⚠️ Ranh Giới REAL vs FAKE (MVP)</h2>
+
+<table>
+  <thead><tr><th>Feature</th><th>MVP Status</th><th>Lý Do</th></tr></thead>
+  <tbody>
+    <tr><td>Khảo sát → Feature gate</td><td><span class="badge badge-real">Real</span></td><td>Core logic, cần validate mapping works</td></tr>
+    <tr><td>Weather AQI + Risk %</td><td><span class="badge badge-real">Real</span></td><td>Free API, straightforward</td></tr>
+    <tr><td>Audio recording + classify</td><td><span class="badge badge-real">Real</span></td><td>Backend đã có, chỉ cần iOS gửi WAV</td></tr>
+    <tr><td>Camera food detect</td><td><span class="badge badge-real">Real</span></td><td>YOLOv10 model sẵn</td></tr>
+    <tr><td>Coins / Gamification</td><td><span class="badge badge-fake">Fake</span></td><td>Local state, chưa cần ví thật cho validation</td></tr>
+    <tr><td>Voucher redemption</td><td><span class="badge badge-fake">Fake</span></td><td>Alert success, chưa kết nối thanh toán thật</td></tr>
+    <tr><td>Weekly Before/After data</td><td><span class="badge badge-fake">Fake → Real</span></td><td>Tuần 1 dùng data mẫu, tuần 2+ lấy data thật từ sessions</td></tr>
+  </tbody>
+</table>
+
+</div>
+</body>
+</html>

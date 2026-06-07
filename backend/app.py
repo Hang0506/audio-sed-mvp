@@ -5,6 +5,7 @@ from pathlib import Path
 
 import librosa
 from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -15,12 +16,33 @@ from cough_recommendation import (
     COUGH_TYPES, DURATION_CATEGORIES, SUBJECT_GROUPS, RED_FLAG_LABELS,
 )
 from cough_type_v2 import classify_cough_type
+from routes.intake import router as intake_router
+from routes.context import router as context_router
+from routes.sleep import router as sleep_router
+from routes.alerts import router as alerts_router
+from routes.food import router as food_router
+from routes.checkout import router as checkout_router
 
 STORAGE_DIR = Path(__file__).parent / "storage" / "real_wav"
 RECORDINGS_DIR = Path(__file__).parent / "storage" / "recordings"
 FRONTEND_DIR = Path(__file__).parent.parent / "frontend"
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(intake_router)
+app.include_router(context_router)
+app.include_router(sleep_router)
+app.include_router(alerts_router)
+app.include_router(food_router)
+app.include_router(checkout_router)
 
 
 @app.on_event("startup")

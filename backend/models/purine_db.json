@@ -1,0 +1,5 @@
+{
+  "high_purine": ["Tom", "Muc", "Ca", "Lau", "Bun bo Hue"],
+  "moderate_purine": ["Thit kho", "Bo kho", "Bun cha", "Com tam", "Pho", "Cha gio", "Banh mi"],
+  "low_purine": ["Rau", "Dau hu", "Trung", "Xoi", "Goi cuon", "Banh xeo", "Bun rieu", "Hu tieu"]
+}

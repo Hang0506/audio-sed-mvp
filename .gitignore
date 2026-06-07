@@ -6,3 +6,20 @@ __pycache__/
 backend/storage/recordings/
 backend/storage/raw/
 backend/models/yamnet.onnx
+
+# Android
+android/.gradle/
+android/.idea/
+android/build/
+android/app/build/
+android/local.properties
+*.apk
+*.aab
+
+# iOS
+ios/**/*.xcodeproj/xcuserdata/
+ios/**/DerivedData/
+
+# OS
+.DS_Store
+Thumbs.db

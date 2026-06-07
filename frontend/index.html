@@ -435,6 +435,150 @@
                 </form>
             </section>
             
+            <!-- Sleep Assessment Section (shown when Snoring/Breathing detected, no Cough) -->
+            <section id="sleep-assessment-section" class="hidden lg:col-span-12 xl:col-span-9 bg-white rounded-2xl shadow-premium border border-purple-100/50 p-6 space-y-5">
+                <div class="flex items-center gap-2 border-b border-purple-100 pb-3">
+                    <span class="text-lg">😴</span>
+                    <h2 class="text-base font-bold text-purple-700">Khảo sát lâm sàng giấc ngủ</h2>
+                    <span class="text-[9px] bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-bold ml-auto">AI phát hiện Ngáy/Thở bất thường</span>
+                </div>
+
+                <p class="text-xs text-gray-500">Hệ thống AI phát hiện âm thanh ngáy/thở bất thường trong đoạn ghi âm. Vui lòng trả lời các câu hỏi bên dưới để nhận gợi ý chăm sóc giấc ngủ.</p>
+
+                <form id="sleep-assessment-form" class="space-y-5">
+                    <input type="hidden" name="snoring_severity" value="moderate">
+                    <input type="hidden" name="sleep_position" value="back">
+
+                    <!-- Q1: Tần suất ngáy -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700">1. Bạn ngáy thường xuyên như thế nào? <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-3 gap-2.5" id="group-snoring-freq">
+                            <button type="button" data-val="rarely" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Thỉnh thoảng</span>
+                                <span class="text-[9px] text-gray-500">1–2 đêm/tuần</span>
+                            </button>
+                            <button type="button" data-val="often" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition step-active border-purple-500 bg-purple-50 flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Thường xuyên</span>
+                                <span class="text-[9px] text-gray-500">3–5 đêm/tuần</span>
+                            </button>
+                            <button type="button" data-val="every_night" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Mỗi đêm</span>
+                                <span class="text-[9px] text-gray-500">6–7 đêm/tuần</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q2: Mức độ buồn ngủ ban ngày (Epworth simplified) -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700">2. Ban ngày bạn có hay buồn ngủ không? <span class="text-red-500">*</span></label>
+                        <div class="grid grid-cols-3 gap-2.5" id="group-daytime-sleepiness">
+                            <button type="button" data-val="none" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Không</span>
+                                <span class="text-[9px] text-gray-500">Tỉnh táo bình thường</span>
+                            </button>
+                            <button type="button" data-val="mild" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition step-active border-purple-500 bg-purple-50 flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Hơi buồn ngủ</span>
+                                <span class="text-[9px] text-gray-500">Ngủ gật khi xem TV</span>
+                            </button>
+                            <button type="button" data-val="severe" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Rất buồn ngủ</span>
+                                <span class="text-[9px] text-gray-500">Ngủ gật khi lái xe/họp</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q3: Ngưng thở khi ngủ (người thân quan sát) -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700">3. Người thân có thấy bạn ngưng thở khi ngủ?</label>
+                        <div class="grid grid-cols-2 gap-2.5" id="group-apnea-observed">
+                            <button type="button" data-val="no" class="p-3 rounded-xl border border-gray-200 text-center hover:border-purple-400 transition step-active border-purple-500 bg-purple-50 font-bold text-xs">Không / Không biết</button>
+                            <button type="button" data-val="yes" class="p-3 rounded-xl border border-gray-200 text-center hover:border-purple-400 transition font-bold text-xs">Có — thỉnh thoảng ngưng thở</button>
+                        </div>
+                    </div>
+
+                    <!-- Q4: BMI / Vòng cổ -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700">4. Thể trạng của bạn?</label>
+                        <div class="grid grid-cols-3 gap-2.5" id="group-body-type">
+                            <button type="button" data-val="normal" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition step-active border-purple-500 bg-purple-50 flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Bình thường</span>
+                                <span class="text-[9px] text-gray-500">BMI < 25</span>
+                            </button>
+                            <button type="button" data-val="overweight" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Thừa cân</span>
+                                <span class="text-[9px] text-gray-500">BMI 25–30</span>
+                            </button>
+                            <button type="button" data-val="obese" class="p-3 rounded-xl border border-gray-200 text-left hover:border-purple-400 transition flex flex-col gap-0.5">
+                                <span class="text-xs font-bold text-gray-800">Béo phì</span>
+                                <span class="text-[9px] text-gray-500">BMI > 30</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Q5: Triệu chứng kèm theo -->
+                    <div class="space-y-2">
+                        <label class="block text-sm font-bold text-gray-700">5. Triệu chứng kèm theo (nếu có):</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" name="sleep_symptoms" value="dry_mouth" class="w-4 h-4 text-purple-600 rounded">
+                                <span>🏜️ Khô miệng khi thức dậy</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" name="sleep_symptoms" value="morning_headache" class="w-4 h-4 text-purple-600 rounded">
+                                <span>🤕 Đau đầu buổi sáng</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" name="sleep_symptoms" value="waking_up" class="w-4 h-4 text-purple-600 rounded">
+                                <span>⏰ Hay tỉnh giấc giữa đêm</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" name="sleep_symptoms" value="concentration" class="w-4 h-4 text-purple-600 rounded">
+                                <span>🧠 Khó tập trung, hay quên</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" name="sleep_symptoms" value="hypertension" class="w-4 h-4 text-purple-600 rounded">
+                                <span>❤️‍🔥 Cao huyết áp</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2.5 rounded-lg border border-gray-200 cursor-pointer hover:bg-purple-50 transition">
+                                <input type="checkbox" name="sleep_symptoms" value="nocturia" class="w-4 h-4 text-purple-600 rounded">
+                                <span>🚽 Tiểu đêm nhiều lần</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3.5 rounded-xl font-bold transition-all shadow-lg hover:shadow-xl w-full text-center flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                        Nhận Khuyến Nghị Giấc Ngủ
+                    </button>
+                </form>
+            </section>
+
+            <!-- Sleep Recommendation Results -->
+            <section id="sleep-recommendation-section" class="hidden lg:col-span-12 xl:col-span-4 bg-white rounded-2xl shadow-premium border border-purple-100/50 p-6 space-y-5">
+                <div class="flex items-center gap-2 border-b border-purple-100 pb-3">
+                    <span class="text-lg">🌙</span>
+                    <h2 class="text-base font-bold text-purple-700">Khuyến nghị giấc ngủ</h2>
+                </div>
+                <div id="sleep-warnings" class="space-y-2"></div>
+                <div id="sleep-summary" class="text-xs bg-purple-50 border border-purple-100 rounded-xl p-3.5 text-gray-700"></div>
+                <div id="sleep-recommendations" class="space-y-3.5"></div>
+                <p class="text-[10px] text-red-500 italic mt-3">
+                    ⚠️ Đây là công cụ sàng lọc sơ bộ, không thay thế đa ký giấc ngủ (polysomnography) hoặc chẩn đoán y khoa.
+                </p>
+            </section>
+
+            <!-- Sleep Products -->
+            <section id="sleep-products-section" class="hidden lg:col-span-12 xl:col-span-4 bg-white rounded-2xl shadow-premium border border-purple-100/50 p-6 space-y-4">
+                <div class="flex items-center gap-2 border-b border-purple-100 pb-3">
+                    <span class="text-lg">🛒</span>
+                    <h2 class="text-base font-bold text-purple-700">Sản phẩm hỗ trợ giấc ngủ</h2>
+                </div>
+                <div id="sleep-products-list" class="space-y-4"></div>
+                <div class="pt-2 text-center">
+                    <p class="text-[10px] text-gray-400">Tham khảo Dược sĩ trước khi sử dụng sản phẩm hỗ trợ giấc ngủ</p>
+                </div>
+            </section>
+
             <!-- RIGHT COLUMN CONTAINER: Recommendations & Products (lg:col-span-12, xl:col-span-4) -->
             <div id="output-column" class="hidden lg:col-span-12 xl:col-span-4 w-full space-y-6">
                 <!-- Section 4: Care Recommendations -->
