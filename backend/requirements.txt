@@ -1,6 +1,6 @@
 fastapi>=0.115.0,<1.0
 uvicorn>=0.28.0
-onnxruntime>=1.21.0
+onnxruntime>=1.19.0
 librosa>=0.10.2
 numpy>=1.26.0
 pydub>=0.25.1
