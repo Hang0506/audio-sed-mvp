@@ -15,8 +15,7 @@ from PIL import Image
 from models.food_classes import FOOD_CLASSES
 
 MODEL_DIR = Path(__file__).parent.parent / "models"
-MODEL_PATH = MODEL_DIR / "YOLOv10m_food.pt"
-MODEL_URL = "https://github.com/nvhnam/FoodDetector/raw/v2/model/yolov10/YOLOv10m_new_total_VN_5_SGD.pt"
+MODEL_PATH = MODEL_DIR / "YOLOv10m_food.onnx"
 
 # Full 68 class names from FoodDetector repo (index → name)
 CLASS_NAMES_FULL = [
@@ -40,21 +39,8 @@ _model = None
 _mock_mode = False
 
 
-def _download_model():
-    """Download YOLOv10 model from FoodDetector repo."""
-    import httpx
-    print(f"[FoodDetector] Downloading model from GitHub (~50MB)...")
-    MODEL_DIR.mkdir(parents=True, exist_ok=True)
-    with httpx.stream("GET", MODEL_URL, follow_redirects=True, timeout=120) as r:
-        r.raise_for_status()
-        with open(MODEL_PATH, "wb") as f:
-            for chunk in r.iter_bytes(8192):
-                f.write(chunk)
-    print(f"[FoodDetector] Model saved to {MODEL_PATH}")
-
-
 def _load_model():
-    """Load YOLO model. Download if needed."""
+    """Load YOLO ONNX model."""
     global _model, _mock_mode
     if _model is not None:
         return
@@ -62,12 +48,12 @@ def _load_model():
     try:
         from ultralytics import YOLO
 
-        if not MODEL_PATH.exists():
-            _download_model()
+        if not MODEL_PATH.exists() or MODEL_PATH.stat().st_size < 1024:
+            raise FileNotFoundError(f"Model not found: {MODEL_PATH}")
 
-        _model = YOLO(str(MODEL_PATH))
+        _model = YOLO(str(MODEL_PATH), task="detect")
         _mock_mode = False
-        print("[FoodDetector] Model loaded successfully (REAL mode)")
+        print(f"[FoodDetector] Model loaded successfully (REAL mode, ONNX)")
     except Exception as e:
         print(f"[FoodDetector] Cannot load model: {e}. Using MOCK mode.")
         _mock_mode = True
