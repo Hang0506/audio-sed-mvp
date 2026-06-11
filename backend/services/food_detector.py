@@ -91,8 +91,12 @@ def _get_name_vi(class_name: str) -> str:
     return class_name
 
 
-def detect(image_bytes: bytes, confidence: float = 0.5) -> list[dict]:
-    """Detect foods in image. Returns list of detections."""
+def detect(image_bytes: bytes, confidence: float = 0.75) -> list[dict]:
+    """Detect foods in image. Returns list of detections.
+    
+    confidence: minimum threshold (default 0.75 to reduce false positives).
+    Detections below this are discarded.
+    """
     _load_model()
 
     if _mock_mode:
@@ -115,6 +119,7 @@ def detect(image_bytes: bytes, confidence: float = 0.5) -> list[dict]:
     # Real inference
     start = time.time()
     img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+    img_w, img_h = img.size
     results = _model.predict(source=img, conf=confidence, imgsz=640, device="cpu", verbose=False)
 
     detections = []
@@ -124,6 +129,16 @@ def detect(image_bytes: bytes, confidence: float = 0.5) -> list[dict]:
             conf = round(box.conf[0].item(), 3)
             xyxy = box.xyxy[0].cpu().numpy().tolist()
             class_name = CLASS_NAMES_FULL[class_id] if class_id < len(CLASS_NAMES_FULL) else f"class_{class_id}"
+
+            # Skip "Con nguoi" (person) class — not food
+            if class_name == "Con nguoi":
+                continue
+
+            # Filter out unreasonably large bboxes (>90% of image = likely false positive)
+            bw = xyxy[2] - xyxy[0]
+            bh = xyxy[3] - xyxy[1]
+            if bw > img_w * 0.9 and bh > img_h * 0.9:
+                continue
 
             detections.append({
                 "class_id": class_id,
