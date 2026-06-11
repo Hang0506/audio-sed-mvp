@@ -60,20 +60,24 @@ def _load_model():
 
 
 def _get_nutrition(class_name: str) -> dict:
-    """Lookup nutrition from FOOD_CLASSES by partial name match."""
-    name_lower = class_name.lower().replace(" ", "")
+    """Lookup nutrition from FOOD_CLASSES. Exact match first."""
+    cl = class_name.lower().replace(" ", "")
+    # Exact match
     for fc in FOOD_CLASSES.values():
-        if fc["name"].lower().replace(" ", "") in name_lower or name_lower in fc["name"].lower().replace(" ", ""):
+        if fc["name"].lower().replace(" ", "") == cl:
             return fc["nutrition"]
     # Fallback: generic
     return {"Calories": 200, "Fat": 8, "Saturates": 2, "Sugar": 3, "Salt": 0.8}
 
 
 def _get_name_vi(class_name: str) -> str:
-    """Get Vietnamese display name."""
+    """Get Vietnamese display name. Exact match first, then partial."""
+    cl = class_name.lower().strip()
+    # Exact match
     for fc in FOOD_CLASSES.values():
-        if fc["name"].lower() in class_name.lower() or class_name.lower() in fc["name"].lower():
+        if fc["name"].lower() == cl:
             return fc.get("name_vi", class_name)
+    # Partial — only if FOOD_CLASSES name fully matches a word boundary
     return class_name
 
 

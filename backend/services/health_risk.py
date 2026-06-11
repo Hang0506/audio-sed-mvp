@@ -63,9 +63,13 @@ def assess_health_risk(detected_foods: list[dict], user_profile: dict) -> dict:
 
         # ENT + spicy/cold food
         if "ENT" in tags:
-            class_id = food.get("class_id")
-            food_data = FOOD_CLASSES.get(class_id, {})
-            if "spicy" in food_data.get("flags", []):
+            # Lookup flags by food name match (not class_id — FOOD_CLASSES index != YOLO class_id)
+            food_flags = []
+            for fc in FOOD_CLASSES.values():
+                if fc["name"].lower() == name.lower() or name.lower() in fc["name"].lower():
+                    food_flags = fc.get("flags", [])
+                    break
+            if "spicy" in food_flags:
                 alerts.append({
                     "type": "ent_irritant", "severity": "warning",
                     "message_vi": f"🌶️ {name_vi} cay nóng — không tốt cho Tai Mũi Họng",
