@@ -1,11 +1,13 @@
 """Vietnamese food classes with nutrition data per serving."""
 
 # Nutrition per typical serving (kcal, g fat, g saturates, g sugar, g salt)
+# ENT flags: spicy (cay), fried (chiên/dầu mỡ), cold (lạnh), high_sugar (ngọt/đờm)
 FOOD_CLASSES: dict[int, dict] = {
     0: {"name": "Pho", "name_vi": "Phở", "serving_type": "bowl",
         "nutrition": {"Calories": 450, "Fat": 10, "Saturates": 3.5, "Sugar": 3, "Salt": 2.8}},
     1: {"name": "Bun bo Hue", "name_vi": "Bún bò Huế", "serving_type": "bowl",
-        "nutrition": {"Calories": 520, "Fat": 15, "Saturates": 5, "Sugar": 2, "Salt": 3.2}},
+        "nutrition": {"Calories": 520, "Fat": 15, "Saturates": 5, "Sugar": 2, "Salt": 3.2},
+        "flags": ["spicy"]},
     2: {"name": "Com tam", "name_vi": "Cơm tấm", "serving_type": "plate",
         "nutrition": {"Calories": 680, "Fat": 22, "Saturates": 7, "Sugar": 4, "Salt": 2.0}},
     3: {"name": "Banh mi", "name_vi": "Bánh mì", "serving_type": "piece",
@@ -13,7 +15,8 @@ FOOD_CLASSES: dict[int, dict] = {
     4: {"name": "Goi cuon", "name_vi": "Gỏi cuốn", "serving_type": "2 rolls",
         "nutrition": {"Calories": 150, "Fat": 3, "Saturates": 0.5, "Sugar": 2, "Salt": 1.0}},
     5: {"name": "Cha gio", "name_vi": "Chả giò", "serving_type": "3 pieces",
-        "nutrition": {"Calories": 320, "Fat": 18, "Saturates": 4, "Sugar": 3, "Salt": 1.5}},
+        "nutrition": {"Calories": 320, "Fat": 18, "Saturates": 4, "Sugar": 3, "Salt": 1.5},
+        "flags": ["fried"]},
     6: {"name": "Thit kho", "name_vi": "Thịt kho", "serving_type": "portion",
         "nutrition": {"Calories": 350, "Fat": 20, "Saturates": 7, "Sugar": 8, "Salt": 2.2}},
     7: {"name": "Tom", "name_vi": "Tôm", "serving_type": "portion",
@@ -31,7 +34,8 @@ FOOD_CLASSES: dict[int, dict] = {
     13: {"name": "Xoi", "name_vi": "Xôi", "serving_type": "portion",
          "nutrition": {"Calories": 350, "Fat": 8, "Saturates": 2, "Sugar": 2, "Salt": 0.5}},
     14: {"name": "Banh xeo", "name_vi": "Bánh xèo", "serving_type": "piece",
-         "nutrition": {"Calories": 450, "Fat": 22, "Saturates": 5, "Sugar": 4, "Salt": 1.8}},
+         "nutrition": {"Calories": 450, "Fat": 22, "Saturates": 5, "Sugar": 4, "Salt": 1.8},
+         "flags": ["fried"]},
     15: {"name": "Bun cha", "name_vi": "Bún chả", "serving_type": "bowl",
          "nutrition": {"Calories": 480, "Fat": 16, "Saturates": 5, "Sugar": 6, "Salt": 2.5}},
     16: {"name": "Bun rieu", "name_vi": "Bún riêu", "serving_type": "bowl",

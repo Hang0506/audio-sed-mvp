@@ -26,6 +26,16 @@ async def food_scan(file: UploadFile, user_id: Optional[str] = None):
     foods = detect(image_bytes)
     inference_time_ms = (time.time() - start) * 1000
 
+    # Không phát hiện đồ ăn
+    if not foods:
+        return {
+            "foods": [],
+            "total_nutrition": {"Calories": 0, "Fat": 0, "Saturates": 0, "Sugar": 0, "Salt": 0},
+            "risk_alerts": [],
+            "message_vi": "Không tìm thấy thông tin thức ăn trên ảnh. Bạn cần kiểm tra lại đã đưa đúng camera vào món ăn chưa.",
+            "inference_time_ms": round(inference_time_ms, 1),
+        }
+
     # Health risk assessment
     user_profile = {}
     if user_id:

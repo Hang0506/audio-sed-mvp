@@ -6,7 +6,9 @@ from pathlib import Path
 from models.food_classes import FOOD_CLASSES
 
 PURINE_DB_PATH = Path(__file__).parent.parent / "models" / "purine_db.json"
+ENT_DB_PATH = Path(__file__).parent.parent / "models" / "ent_food_db.json"
 _purine_db: dict = {}
+_ent_db: dict = {}
 
 
 def _load_purine_db() -> dict:
@@ -16,10 +18,18 @@ def _load_purine_db() -> dict:
     return _purine_db
 
 
+def _load_ent_db() -> dict:
+    global _ent_db
+    if not _ent_db:
+        _ent_db = json.loads(ENT_DB_PATH.read_text(encoding="utf-8"))
+    return _ent_db
+
+
 def assess_health_risk(detected_foods: list[dict], user_profile: dict) -> dict:
     """Assess health risks based on detected foods and user conditions."""
     tags = set(user_profile.get("disease_tags", []))
     purine = _load_purine_db()
+    ent_db = _load_ent_db()
     alerts: list[dict] = []
     total = {"Calories": 0, "Fat": 0, "Saturates": 0, "Sugar": 0, "Salt": 0}
 
@@ -61,19 +71,15 @@ def assess_health_risk(detected_foods: list[dict], user_profile: dict) -> dict:
                 "food_name": name_vi,
             })
 
-        # ENT + spicy/cold food
+        # ENT — cảnh báo dựa trên tên món ăn (không cần user có tag ENT)
         if "ENT" in tags:
-            # Lookup flags by food name match (not class_id — FOOD_CLASSES index != YOLO class_id)
-            food_flags = []
-            for fc in FOOD_CLASSES.values():
-                if fc["name"].lower() == name.lower() or name.lower() in fc["name"].lower():
-                    food_flags = fc.get("flags", [])
-                    break
-            if "spicy" in food_flags:
-                alerts.append({
-                    "type": "ent_irritant", "severity": "warning",
-                    "message_vi": f"🌶️ {name_vi} cay nóng — không tốt cho Tai Mũi Họng",
-                    "food_name": name_vi,
-                })
+            for risk_type, risk_info in ent_db.items():
+                if name in risk_info["foods"]:
+                    alerts.append({
+                        "type": f"ent_{risk_type}",
+                        "severity": risk_info["severity"],
+                        "message_vi": risk_info["message_template"].format(name_vi=name_vi),
+                        "food_name": name_vi,
+                    })
 
     return {"risk_alerts": alerts, "total_nutrition": total}

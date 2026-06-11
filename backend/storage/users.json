@@ -14,5 +14,81 @@
     ],
     "vitals": {},
     "created_at": "2026-06-05T07:26:21.167219"
+  },
+  "00a5fc5e-3dda-4d89-892d-12d72b02e76a": {
+    "id": "00a5fc5e-3dda-4d89-892d-12d72b02e76a",
+    "name": "Nguyen Van A",
+    "device_token": "fcm_token_123",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT",
+      "Gout"
+    ],
+    "symptoms": [
+      "ho_dem",
+      "ngay_mui"
+    ],
+    "vitals": {
+      "weight": 70,
+      "height": 170
+    },
+    "created_at": "2026-06-11T12:28:02.798499"
+  },
+  "7c9ff139-70f9-4ab8-b42b-cffcc7484571": {
+    "id": "7c9ff139-70f9-4ab8-b42b-cffcc7484571",
+    "name": "Nguyen Van A",
+    "device_token": "fcm_token_123",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT",
+      "Gout"
+    ],
+    "symptoms": [
+      "ho_dem",
+      "ngay_mui"
+    ],
+    "vitals": {
+      "weight": 70,
+      "height": 170
+    },
+    "created_at": "2026-06-11T12:28:36.665596"
+  },
+  "e3d135c9-6d16-40e1-af13-2710b7f80f44": {
+    "id": "e3d135c9-6d16-40e1-af13-2710b7f80f44",
+    "name": "Nguyen Van A",
+    "device_token": "fcm_token_123",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT",
+      "Gout"
+    ],
+    "symptoms": [
+      "ho_dem",
+      "ngay_mui"
+    ],
+    "vitals": {
+      "weight": 70,
+      "height": 170
+    },
+    "created_at": "2026-06-11T12:46:14.191127"
+  },
+  "880063b0-e228-46be-b07e-a133df239d48": {
+    "id": "880063b0-e228-46be-b07e-a133df239d48",
+    "name": "Test User",
+    "device_token": "",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "Gout",
+      "ENT"
+    ],
+    "symptoms": [
+      "joint_pain"
+    ],
+    "vitals": {},
+    "created_at": "2026-06-11T00:00:00"
   }
 }

@@ -1,0 +1,27 @@
+{
+  "spicy": {
+    "foods": ["Lau", "Bo kho", "Bun bo Hue", "Bun mam"],
+    "severity": "danger",
+    "message_template": "🌶️ {name_vi} cay nóng — kích thích niêm mạc họng, tăng viêm Tai Mũi Họng"
+  },
+  "fried": {
+    "foods": ["Cha gio", "Banh xeo", "Khoai tay chien", "Trung chien", "Heo quay"],
+    "severity": "warning",
+    "message_template": "🍳 {name_vi} chiên/dầu mỡ — gây nóng trong, tăng đờm, không tốt cho TMH"
+  },
+  "cold": {
+    "foods": ["Che", "Trai cay", "Dua hau"],
+    "severity": "warning",
+    "message_template": "🧊 {name_vi} lạnh — co mạch niêm mạc họng, dễ tái phát viêm họng"
+  },
+  "high_salt": {
+    "foods": ["Lau", "Bun bo Hue", "Pho", "Bun rieu", "Mi"],
+    "severity": "warning",
+    "message_template": "🧂 {name_vi} mặn — gây phù nề niêm mạc, tăng nghẹt mũi"
+  },
+  "irritant": {
+    "foods": ["Oc", "Tom", "Muc", "Cua"],
+    "severity": "warning",
+    "message_template": "⚠️ {name_vi} hải sản — dễ gây dị ứng, kích thích viêm mũi họng ở người nhạy cảm"
+  }
+}
