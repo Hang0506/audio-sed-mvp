@@ -1,0 +1,29 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Flutter: Audio SED App",
+      "request": "launch",
+      "type": "dart",
+      "cwd": "${workspaceFolder}/frontend_flutter",
+      "program": "${workspaceFolder}/frontend_flutter/lib/main.dart"
+    },
+    {
+      "name": "Python: FastAPI Backend",
+      "type": "debugpy",
+      "request": "launch",
+      "python": "${workspaceFolder}/backend/.venv/Scripts/python.exe",
+      "module": "uvicorn",
+      "args": [
+        "app:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000"
+      ],
+      "cwd": "${workspaceFolder}/backend",
+      "jinja": true
+    }
+  ]
+}
