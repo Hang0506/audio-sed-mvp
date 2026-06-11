@@ -4,13 +4,13 @@ import 'package:go_router/go_router.dart';
 
 import '../di/injection_container.dart';
 import '../../features/audio_sed/domain/entities/analysis_result.dart';
-import '../../features/audio_sed/domain/entities/recommendation_result.dart';
+import '../../features/recommendation/domain/entities/recommendation_result.dart';
 import '../../features/audio_sed/presentation/cubit/audio_sed_cubit.dart';
-import '../../features/audio_sed/presentation/cubit/recommendation_cubit.dart';
+import '../../features/recommendation/presentation/cubit/recommendation_cubit.dart';
 import '../../features/audio_sed/presentation/pages/audio_sed_page.dart';
-import '../../features/audio_sed/presentation/pages/assessment_page.dart';
-import '../../features/audio_sed/presentation/pages/recommendation_page.dart';
-import '../../features/audio_sed/presentation/pages/sleep_assessment_page.dart';
+import '../../features/recommendation/presentation/pages/assessment_page.dart';
+import '../../features/recommendation/presentation/pages/recommendation_page.dart';
+import '../../features/recommendation/presentation/pages/sleep_assessment_page.dart';
 
 class AppRouter {
   static final rootNavigatorKey = GlobalKey<NavigatorState>();

@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../repositories/audio_repository.dart';
+import '../repositories/recommendation_repository.dart';
 
 class SleepAssessmentParams {
   final String snoringFreq;
@@ -19,7 +19,7 @@ class SleepAssessmentParams {
 }
 
 class GetSleepRecommendation {
-  final AudioRepository repository;
+  final RecommendationRepository repository;
 
   GetSleepRecommendation({required this.repository});
 
@@ -33,3 +33,4 @@ class GetSleepRecommendation {
     );
   }
 }
+

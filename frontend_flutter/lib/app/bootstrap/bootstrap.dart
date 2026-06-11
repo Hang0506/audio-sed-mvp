@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../app.dart';
 import '../cubit/theme_cubit.dart';
 import '../di/injection_container.dart';
+import '../../features/health_360/presentation/cubit/health_360_cubit.dart';
 
 Future<void> runApplication() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +24,7 @@ Future<void> runApplication() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<ThemeCubit>(create: (_) => sl<ThemeCubit>()),
+        BlocProvider<Health360Cubit>(create: (_) => sl<Health360Cubit>()),
       ],
       child: const MyApp(),
     ),

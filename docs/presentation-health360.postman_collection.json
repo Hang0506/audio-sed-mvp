@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "0cfb3c96-0e34-4f61-8cfb-164d489fe937",
+    "name": "presentation-health360",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "20149061"
+  },
+  "item": [
+    {
+      "name": "1. Tạo user profile",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "2. Lấy user profile",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "3. Lấy thời tiết + không khí + nhiệt độ",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "4. Phân tích audio (upload file wav)",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "5. Lấy options cho form đánh giá ho",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "6. Đánh giá ho → khuyến nghị",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "7. Đánh giá giấc ngủ",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "8. Đánh giá cảnh báo sức khỏe",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "9. Scan ảnh thức ăn",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "10. Tạo đơn hàng",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"user_id\": \"user_001\",\n    \"product_id\": \"prod_001\",\n    \"product_name\": \"Thuốc ho Prospan\",\n    \"quantity\": 1,\n    \"delivery_lat\": 10.78,\n    \"delivery_long\": 106.7\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/v1/order/create",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "order",
+            "create"
+          ]
+        },
+        "description": "Generated from cURL: curl --location 'http://localhost:8000/api/v1/order/create' --header 'Content-Type: application/json' --data '{\n    \"user_id\": \"user_001\",\n    \"product_id\": \"prod_001\",\n    \"product_name\": \"Thuốc ho Prospan\",\n    \"quantity\": 1,\n    \"delivery_lat\": 10.78,\n    \"delivery_long\": 106.7\n}'"
+      },
+      "response": []
+    },
+    {
+      "name": "11. Xem đơn hàng",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/v1/order/{order_id}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "order",
+            "{order_id}"
+          ]
+        },
+        "description": "Generated from cURL: curl --location 'http://localhost:8000/api/v1/order/{order_id}'"
+      },
+      "response": []
+    },
+    {
+      "name": "12. Track analytics event",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"event_type\": \"view_recommendation\",\n    \"user_id\": \"user_001\",\n    \"metadata\": {\"screen\": \"home\", \"action\": \"tap_cough_card\"}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/v1/analytics/event",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "analytics",
+            "event"
+          ]
+        },
+        "description": "Generated from cURL: curl --location 'http://localhost:8000/api/v1/analytics/event' --header 'Content-Type: application/json' --data '{\n    \"event_type\": \"view_recommendation\",\n    \"user_id\": \"user_001\",\n    \"metadata\": {\"screen\": \"home\", \"action\": \"tap_cough_card\"}\n}'"
+      },
+      "response": []
+    },
+    {
+      "name": "13. List audio samples",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8000/api/samples",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "samples"
+          ]
+        },
+        "description": "Generated from cURL: curl --location 'http://localhost:8000/api/samples'"
+      },
+      "response": []
+    },
+    {
+      "name": "14. Cập nhật device token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "disabled": false
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"user_id\": \"{{user_id}}\",\n    \"device_token\": \"new_fcm_token_xyz\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8000/api/v1/user/device-token",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8000",
+          "path": [
+            "api",
+            "v1",
+            "user",
+            "device-token"
+          ]
+        },
+        "description": "Generated from cURL: curl --location 'http://localhost:8000/api/v1/user/device-token' --header 'Content-Type: application/json' --data '{\n    \"user_id\": \"{{user_id}}\",\n    \"device_token\": \"new_fcm_token_xyz\"\n}'"
+      },
+      "response": []
+    }
+  ]
+}

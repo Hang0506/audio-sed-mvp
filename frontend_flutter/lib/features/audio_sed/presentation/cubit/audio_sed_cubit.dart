@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../domain/usecases/analyze_audio.dart';
 import '../../domain/usecases/download_sample.dart';
@@ -24,9 +25,9 @@ class AudioSedCubit extends Cubit<AudioSedState> {
     required DownloadSample downloadSample,
     required AnalyzeAudio analyzeAudio,
   })  : _getSamples = getSamples,
-        _downloadSample = downloadSample,
-        _analyzeAudio = analyzeAudio,
-        super(const AudioSedInitial());
+      _downloadSample = downloadSample,
+      _analyzeAudio = analyzeAudio,
+      super(const AudioSedInitial());
 
   Future<void> fetchSamples() async {
     emit(const AudioSedSamplesLoading());
@@ -45,9 +46,9 @@ class AudioSedCubit extends Cubit<AudioSedState> {
 
   Future<void> startRecording(String mode) async {
     try {
-      // Check microphone permission
-      final hasPermission = await _audioRecorder.hasPermission();
-      if (!hasPermission) {
+      // Check microphone permission using permission_handler
+      final status = await Permission.microphone.request();
+      if (!status.isGranted) {
         emit(AudioSedError(
           'Không có quyền truy cập microphone. Vui lòng cấp quyền trong cài đặt.',
           samples: _cachedSamples,

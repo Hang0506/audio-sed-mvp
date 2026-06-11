@@ -4,8 +4,6 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../../../core/network/api_client.dart';
 import '../models/analysis_result_model.dart';
-import '../models/recommendation_result_model.dart';
-import '../../domain/entities/cough_assessment.dart';
 
 abstract class AudioRemoteDataSource {
   Future<List<String>> getSamples();
@@ -15,16 +13,6 @@ abstract class AudioRemoteDataSource {
   Future<AnalysisResultModel> analyzeAudio({
     required String filePath,
     required String mode,
-  });
-
-  Future<RecommendationResultModel> getRecommendation(CoughAssessment assessment);
-
-  Future<Map<String, dynamic>> getSleepRecommendation({
-    required String snoringFreq,
-    required String daytimeSleepiness,
-    required String apneaObserved,
-    required String bodyType,
-    required List<String> sleepSymptoms,
   });
 }
 
@@ -85,44 +73,5 @@ class AudioRemoteDataSourceImpl implements AudioRemoteDataSource {
       throw Exception('Audio analysis failed');
     }
   }
-
-  @override
-  Future<RecommendationResultModel> getRecommendation(CoughAssessment assessment) async {
-    final response = await client.post(
-      '/api/recommendation',
-      data: assessment.toJson(),
-    );
-
-    if (response.statusCode == 200) {
-      return RecommendationResultModel.fromJson(response.data as Map<String, dynamic>);
-    } else {
-      throw Exception('Failed to get recommendations');
-    }
-  }
-
-  @override
-  Future<Map<String, dynamic>> getSleepRecommendation({
-    required String snoringFreq,
-    required String daytimeSleepiness,
-    required String apneaObserved,
-    required String bodyType,
-    required List<String> sleepSymptoms,
-  }) async {
-    final response = await client.post(
-      '/api/sleep-assessment',
-      data: {
-        'snoring_freq': snoringFreq,
-        'daytime_sleepiness': daytimeSleepiness,
-        'apnea_observed': apneaObserved,
-        'body_type': bodyType,
-        'sleep_symptoms': sleepSymptoms,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      return response.data as Map<String, dynamic>;
-    } else {
-      throw Exception('Failed to get sleep recommendations');
-    }
-  }
 }
+

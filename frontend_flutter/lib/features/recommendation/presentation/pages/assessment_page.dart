@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../app/theme/app_theme.dart';
-import '../../domain/entities/analysis_result.dart';
-import '../../domain/entities/sound_event.dart';
+import 'package:frontend_flutter/features/audio_sed/domain/entities/analysis_result.dart';
+import 'package:frontend_flutter/features/audio_sed/domain/entities/sound_event.dart';
 import '../../domain/entities/cough_assessment.dart';
 import '../cubit/recommendation_cubit.dart';
 import '../cubit/recommendation_state.dart';

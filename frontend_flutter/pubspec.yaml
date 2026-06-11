@@ -29,7 +29,8 @@ dependencies:
   audioplayers: ^6.0.0
   path_provider: ^2.1.4
   permission_handler: ^11.3.1
-
+  image_picker: ^1.1.2
+  camera: ^0.11.0
   # Environment Config
   flutter_dotenv: ^5.1.0
 
@@ -38,6 +39,7 @@ dependencies:
   dartz: ^0.10.1
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.10+1
+  http_parser: ^4.0.0
 
 dev_dependencies:
   flutter_test:

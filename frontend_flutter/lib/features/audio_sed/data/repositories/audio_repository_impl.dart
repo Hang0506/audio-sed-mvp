@@ -1,8 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/analysis_result.dart';
-import '../../domain/entities/cough_assessment.dart';
-import '../../domain/entities/recommendation_result.dart';
 import '../../domain/repositories/audio_repository.dart';
 import '../datasources/audio_remote_data_source.dart';
 
@@ -46,38 +44,5 @@ class AudioRepositoryImpl implements AudioRepository {
       return Left(ServerFailure('Lỗi phân tích âm thanh: ${e.toString()}'));
     }
   }
-
-  @override
-  Future<Either<Failure, RecommendationResult>> getRecommendation(
-    CoughAssessment assessment,
-  ) async {
-    try {
-      final result = await remoteDataSource.getRecommendation(assessment);
-      return Right(result);
-    } catch (e) {
-      return Left(ServerFailure('Lỗi tải khuyến nghị: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Map<String, dynamic>>> getSleepRecommendation({
-    required String snoringFreq,
-    required String daytimeSleepiness,
-    required String apneaObserved,
-    required String bodyType,
-    required List<String> sleepSymptoms,
-  }) async {
-    try {
-      final result = await remoteDataSource.getSleepRecommendation(
-        snoringFreq: snoringFreq,
-        daytimeSleepiness: daytimeSleepiness,
-        apneaObserved: apneaObserved,
-        bodyType: bodyType,
-        sleepSymptoms: sleepSymptoms,
-      );
-      return Right(result);
-    } catch (e) {
-      return Left(ServerFailure('Lỗi tải khuyến nghị giấc ngủ: ${e.toString()}'));
-    }
-  }
 }
+

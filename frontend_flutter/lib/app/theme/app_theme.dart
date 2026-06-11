@@ -44,22 +44,22 @@ class AppColors {
   static const ColorScheme darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
     primary: Color(0xFF38BDF8), // Light blue for dark mode
-    onPrimary: Color(0xFF0F172A),
+    onPrimary: Color(0xFF090D16),
     primaryContainer: Color(0xFF1E293B),
-    onPrimaryContainer: Color(0xFFF1F5F9),
-    secondary: Color(0xFFF97316), // Light orange
-    onSecondary: Color(0xFF0F172A),
-    secondaryContainer: Color(0xFF263548),
+    onPrimaryContainer: Color(0xFFF8FAFC),
+    secondary: Color(0xFFFB923C), // Orange gold
+    onSecondary: Color(0xFF090D16),
+    secondaryContainer: Color(0xFF1B263F),
     onSecondaryContainer: Color(0xFFFFF5F0),
-    tertiary: Color(0xFF14B8A6), // Teal
-    onTertiary: Color(0xFF0F172A),
+    tertiary: Color(0xFF10B981), // Teal
+    onTertiary: Color(0xFF090D16),
     error: Color(0xFFEF4444),
     onError: Colors.white,
-    surface: Color(0xFF1E293B),
-    onSurface: Color(0xFFF1F5F9),
-    onSurfaceVariant: Color(0xFF94A3B8),
-    outline: Color(0xFF334155),
-    shadow: Colors.black38,
+    surface: Color(0xFF131C2E), // Premium Card
+    onSurface: Color(0xFFF8FAFC),
+    onSurfaceVariant: Color(0xFF64748B),
+    outline: Color(0xFF1E293B),
+    shadow: Colors.black54,
   );
 }
 
@@ -119,7 +119,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       colorScheme: AppColors.darkColorScheme,
-      scaffoldBackgroundColor: const Color(0xFF0F172A),
+      scaffoldBackgroundColor: const Color(0xFF020617),
       textTheme: baseTextTheme.copyWith(
         titleLarge: baseTextTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         titleMedium: baseTextTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -138,11 +138,11 @@ class AppTheme {
         ),
       ),
       cardTheme: const CardThemeData(
-        color: Color(0xFF1E293B),
+        color: Color(0xFF131C2E),
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(16)),
-          side: BorderSide(color: Color(0xFF334155)),
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+          side: BorderSide(color: Color(0xFF1E293B)),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
