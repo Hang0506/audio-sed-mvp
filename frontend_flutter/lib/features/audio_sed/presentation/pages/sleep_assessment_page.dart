@@ -156,14 +156,28 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                   SizedBox(
                     width: double.infinity,
                     height: 52,
-                    child: ElevatedButton.icon(
+                    child: ElevatedButton(
                       onPressed: _submitForm,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF9333EA), // Purple
                         foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                       ),
-                      icon: const Icon(Icons.nightlight_round, size: 20),
-                      label: const Text('NHẬN KHUYẾN NGHỊ GIẤC NGỦ'),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.nightlight_round, size: 20),
+                          const SizedBox(width: 8),
+                          const Flexible(
+                            child: Text(
+                              'NHẬN KHUYẾN NGHỊ GIẤC NGỦ',
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -176,11 +190,13 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
   }
 
   Widget _buildHeaderCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Card(
-      color: const Color(0xFFFAF5FF), // Light purple
+      color: isDark ? theme.colorScheme.primaryContainer : const Color(0xFFFAF5FF), // Light purple
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFE9D5FF)),
+        side: BorderSide(color: isDark ? theme.colorScheme.outline : const Color(0xFFE9D5FF)),
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -190,20 +206,23 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.nights_stay, color: Color(0xFF9333EA), size: 20),
+                Icon(Icons.nights_stay, color: isDark ? theme.colorScheme.primary : const Color(0xFF9333EA), size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'KHẢO SÁT GIẤC NGỦ LÂM SÀNG',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: const Color(0xFF7E22CE),
+                        color: isDark ? theme.colorScheme.primary : const Color(0xFF7E22CE),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
               ],
             ),
-            const Text(
+            Text(
               'Hệ thống phát hiện tiếng ngáy hoặc thở bất thường. Hãy cung cấp thêm thông tin để sàng lọc hội chứng ngưng thở khi ngủ (OSA).',
-              style: TextStyle(fontSize: 11, color: Color(0xFF6B21A8)),
+              style: TextStyle(
+                fontSize: 11,
+                color: isDark ? theme.colorScheme.onPrimaryContainer : const Color(0xFF6B21A8),
+              ),
             ),
           ],
         ),
@@ -232,6 +251,8 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
   }
 
   Widget _buildPill(String value, String title, String subtitle, String groupValue, ValueChanged<String> onChanged) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isSelected = value == groupValue;
     return InkWell(
       onTap: () => onChanged(value),
@@ -239,10 +260,14 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFAF5FF) : Colors.white,
+          color: isSelected
+              ? (isDark ? theme.colorScheme.primaryContainer : const Color(0xFFFAF5FF))
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF9333EA) : Colors.grey.withValues(alpha: 0.2),
+            color: isSelected
+                ? (isDark ? theme.colorScheme.primary : const Color(0xFF9333EA))
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -251,12 +276,23 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: isSelected
+                    ? (isDark ? theme.colorScheme.onPrimaryContainer : const Color(0xFF7E22CE))
+                    : theme.colorScheme.onSurface,
+              ),
             ),
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 8, color: AppColors.textMuted),
+              style: TextStyle(
+                fontSize: 8,
+                color: isSelected
+                    ? (isDark ? theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.7) : const Color(0xFF6B21A8).withValues(alpha: 0.7))
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -265,6 +301,8 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
   }
 
   Widget _buildSimplePill(String value, String label, String groupValue, ValueChanged<String> onChanged) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isSelected = value == groupValue;
     return InkWell(
       onTap: () => onChanged(value),
@@ -273,23 +311,35 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFFAF5FF) : Colors.white,
+          color: isSelected
+              ? (isDark ? theme.colorScheme.primaryContainer : const Color(0xFFFAF5FF))
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF9333EA) : Colors.grey.withValues(alpha: 0.2),
+            color: isSelected
+                ? (isDark ? theme.colorScheme.primary : const Color(0xFF9333EA))
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
         child: Text(
           label,
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: isSelected
+                ? (isDark ? theme.colorScheme.onPrimaryContainer : const Color(0xFF7E22CE))
+                : theme.colorScheme.onSurface,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildCheckboxTile(String value, String title) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isChecked = _sleepSymptoms.contains(value);
     return InkWell(
       onTap: () {
@@ -305,16 +355,20 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: isChecked ? const Color(0xFFFAF5FF) : Colors.white,
+          color: isChecked
+              ? (isDark ? theme.colorScheme.primaryContainer : const Color(0xFFFAF5FF))
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isChecked ? const Color(0xFFE9D5FF) : Colors.grey.withValues(alpha: 0.2),
+            color: isChecked
+                ? (isDark ? theme.colorScheme.primary : const Color(0xFFE9D5FF))
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
           ),
         ),
         child: Row(
           children: [
             Checkbox(
-              activeColor: const Color(0xFF9333EA),
+              activeColor: isDark ? theme.colorScheme.primary : const Color(0xFF9333EA),
               value: isChecked,
               onChanged: (val) {
                 setState(() {
@@ -329,7 +383,11 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF111827)),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? theme.colorScheme.onSurface : const Color(0xFF111827),
+                ),
               ),
             ),
           ],
@@ -378,13 +436,14 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
               Column(
                 spacing: 8,
                 children: warnings.map((w) {
+                  final isDarkWarning = theme.brightness == Brightness.dark;
                   return Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFFEF2F2),
+                      color: isDarkWarning ? Colors.red.withValues(alpha: 0.15) : const Color(0xFFFEF2F2),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFFCA5A5)),
+                      border: Border.all(color: isDarkWarning ? Colors.red.withValues(alpha: 0.4) : const Color(0xFFFCA5A5)),
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +453,11 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                         Expanded(
                           child: Text(
                             w as String,
-                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFB91C1C)),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: isDarkWarning ? Colors.red.shade300 : const Color(0xFFB91C1C),
+                            ),
                           ),
                         ),
                       ],
@@ -474,9 +537,15 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.withValues(alpha: 0.03),
+                    color: theme.brightness == Brightness.dark
+                        ? theme.colorScheme.primaryContainer.withValues(alpha: 0.5)
+                        : Colors.grey.withValues(alpha: 0.03),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.grey.withValues(alpha: 0.12)),
+                    border: Border.all(
+                      color: theme.brightness == Brightness.dark
+                          ? theme.colorScheme.outline
+                          : Colors.grey.withValues(alpha: 0.12),
+                    ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,7 +557,13 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                           const SizedBox(width: 8),
                           Text(
                             label,
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.bold,
+                              color: theme.brightness == Brightness.dark
+                                  ? theme.colorScheme.onSurface
+                                  : const Color(0xFF111827),
+                            ),
                           ),
                         ],
                       ),
@@ -499,11 +574,25 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text('• ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                              Text(
+                                '• ',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                  color: theme.brightness == Brightness.dark
+                                      ? theme.colorScheme.onSurfaceVariant
+                                      : Colors.black54,
+                                ),
+                              ),
                               Expanded(
                                 child: Text(
                                   bullet as String,
-                                  style: const TextStyle(fontSize: 12, color: Color(0xFF4B5563)),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: theme.brightness == Brightness.dark
+                                        ? theme.colorScheme.onSurfaceVariant
+                                        : const Color(0xFF4B5563),
+                                  ),
                                 ),
                               ),
                             ],
@@ -537,6 +626,8 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
   }
 
   Widget _buildSleepProductsSection(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 12,
@@ -547,8 +638,8 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
             const SizedBox(width: 8),
             Text(
               'Sản phẩm đề xuất hỗ trợ giấc ngủ',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.primaryBlue,
+              style: theme.textTheme.titleMedium?.copyWith(
+                    color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue,
                     fontWeight: FontWeight.bold,
                   ),
             ),
@@ -557,13 +648,16 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
         Column(
           spacing: 12,
           children: _sleepProducts.map((p) {
+            final isDark = theme.brightness == Brightness.dark;
             return Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? theme.colorScheme.surface : Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.grey.withValues(alpha: 0.15)),
-                boxShadow: const [
+                border: Border.all(
+                  color: isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.15),
+                ),
+                boxShadow: isDark ? null : const [
                   BoxShadow(
                     color: Colors.black12,
                     blurRadius: 4,
@@ -578,7 +672,7 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                     width: 48,
                     height: 48,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryBlueLight,
+                      color: isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
@@ -587,7 +681,7 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                           : p.iconType == ProductIconType.droplet
                               ? Icons.airline_seat_flat
                               : Icons.health_and_safety,
-                      color: AppColors.primaryBlue,
+                      color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue,
                       size: 24,
                     ),
                   ),
@@ -603,24 +697,32 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                               decoration: BoxDecoration(
-                                color: AppColors.primaryBlueLight,
+                                color: isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
                                 p.brand.toUpperCase(),
-                                style: const TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: AppColors.primaryBlue),
+                                style: TextStyle(
+                                  fontSize: 7,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue,
+                                ),
                               ),
                             ),
                             if (p.tag != null)
                               Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
-                                  color: AppColors.accentOrangeLight,
+                                  color: isDark ? theme.colorScheme.secondaryContainer : AppColors.accentOrangeLight,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
                                 child: Text(
                                   p.tag!,
-                                  style: const TextStyle(fontSize: 7, fontWeight: FontWeight.bold, color: AppColors.accentOrange),
+                                  style: TextStyle(
+                                    fontSize: 7,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? theme.colorScheme.secondary : AppColors.accentOrange,
+                                  ),
                                 ),
                               ),
                           ],
@@ -629,20 +731,31 @@ class _SleepAssessmentPageState extends State<SleepAssessmentPage> {
                           p.name,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? theme.colorScheme.onSurface : const Color(0xFF111827),
+                          ),
                         ),
                         Text(
                           '${p.unit} | ${p.desc}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(fontSize: 10, color: Colors.grey),
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: isDark ? theme.colorScheme.onSurfaceVariant : Colors.grey,
+                          ),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               p.price,
-                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.accentOrange),
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w800,
+                                color: isDark ? theme.colorScheme.secondary : AppColors.accentOrange,
+                              ),
                             ),
                             ElevatedButton(
                               onPressed: () {

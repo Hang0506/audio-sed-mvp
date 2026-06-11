@@ -182,14 +182,28 @@ class _AssessmentPageState extends State<AssessmentPage> {
                       SizedBox(
                         width: double.infinity,
                         height: 52,
-                        child: ElevatedButton.icon(
+                        child: ElevatedButton(
                           onPressed: isLoading ? null : _submitForm,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.accentOrange,
                             foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                           ),
-                          icon: const Icon(Icons.security, size: 20),
-                          label: const Text('NHẬN KHUYẾN NGHỊ Y KHOA & ĐỀ XUẤT THUỐC'),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.security, size: 20),
+                              const SizedBox(width: 8),
+                              const Flexible(
+                                child: Text(
+                                  'NHẬN KHUYẾN NGHỊ Y KHOA & ĐỀ XUẤT THUỐC',
+                                  textAlign: TextAlign.center,
+                                  maxLines: 2,
+                                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -211,8 +225,10 @@ class _AssessmentPageState extends State<AssessmentPage> {
   }
 
   Widget _buildHeaderCard(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     return Card(
-      color: AppColors.primaryBlueLight,
+      color: isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -221,20 +237,23 @@ class _AssessmentPageState extends State<AssessmentPage> {
           children: [
             Row(
               children: [
-                const Icon(Icons.healing, color: AppColors.primaryBlue, size: 20),
+                Icon(Icons.healing, color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue, size: 20),
                 const SizedBox(width: 8),
                 Text(
                   'BỔ SUNG THÔNG TIN LÂM SÀNG',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: AppColors.primaryBlue,
+                        color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue,
                         fontWeight: FontWeight.bold,
                       ),
                 ),
               ],
             ),
-            const Text(
+            Text(
               'Cung cấp thông tin triệu chứng chính xác để nhận khuyến nghị thuốc và phác đồ điều trị an toàn từ dược sĩ.',
-              style: TextStyle(fontSize: 11, color: AppColors.primaryBlueDark),
+              style: TextStyle(
+                fontSize: 11,
+                color: isDark ? theme.colorScheme.onPrimaryContainer : AppColors.primaryBlueDark,
+              ),
             ),
           ],
         ),
@@ -263,6 +282,8 @@ class _AssessmentPageState extends State<AssessmentPage> {
   }
 
   Widget _buildChoicePill(String value, String title, String subtitle, String groupValue, ValueChanged<String> onChanged) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isSelected = value == groupValue;
     return InkWell(
       onTap: () => onChanged(value),
@@ -271,10 +292,14 @@ class _AssessmentPageState extends State<AssessmentPage> {
         width: (MediaQuery.of(context).size.width - 48) / 2, // 2 items per row approximation
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlueLight : Colors.white,
+          color: isSelected
+              ? (isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight)
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey.withValues(alpha: 0.2),
+            color: isSelected
+                ? (isDark ? theme.colorScheme.primary : AppColors.primaryBlue)
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -284,11 +309,22 @@ class _AssessmentPageState extends State<AssessmentPage> {
           children: [
             Text(
               title,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: isSelected
+                    ? (isDark ? theme.colorScheme.onPrimaryContainer : AppColors.primaryBlueDark)
+                    : theme.colorScheme.onSurface,
+              ),
             ),
             Text(
               subtitle,
-              style: TextStyle(fontSize: 9, color: AppColors.textMuted),
+              style: TextStyle(
+                fontSize: 9,
+                color: isSelected
+                    ? (isDark ? theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.7) : AppColors.primaryBlueDark.withValues(alpha: 0.7))
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -297,6 +333,8 @@ class _AssessmentPageState extends State<AssessmentPage> {
   }
 
   Widget _buildSimplePill(String value, String title, String subtitle, String groupValue, ValueChanged<String> onChanged) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isSelected = value == groupValue;
     return InkWell(
       onTap: () => onChanged(value),
@@ -304,10 +342,14 @@ class _AssessmentPageState extends State<AssessmentPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlueLight : Colors.white,
+          color: isSelected
+              ? (isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight)
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey.withValues(alpha: 0.2),
+            color: isSelected
+                ? (isDark ? theme.colorScheme.primary : AppColors.primaryBlue)
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -316,12 +358,23 @@ class _AssessmentPageState extends State<AssessmentPage> {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: isSelected
+                    ? (isDark ? theme.colorScheme.onPrimaryContainer : AppColors.primaryBlueDark)
+                    : theme.colorScheme.onSurface,
+              ),
             ),
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 8, color: AppColors.textMuted),
+              style: TextStyle(
+                fontSize: 8,
+                color: isSelected
+                    ? (isDark ? theme.colorScheme.onPrimaryContainer.withValues(alpha: 0.7) : AppColors.primaryBlueDark.withValues(alpha: 0.7))
+                    : theme.colorScheme.onSurfaceVariant,
+              ),
             ),
           ],
         ),
@@ -330,6 +383,8 @@ class _AssessmentPageState extends State<AssessmentPage> {
   }
 
   Widget _buildIconChoice(String value, IconData icon, String label, String groupValue, ValueChanged<String> onChanged) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isSelected = value == groupValue;
     return InkWell(
       onTap: () => onChanged(value),
@@ -337,10 +392,14 @@ class _AssessmentPageState extends State<AssessmentPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlueLight : Colors.white,
+          color: isSelected
+              ? (isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight)
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey.withValues(alpha: 0.2),
+            color: isSelected
+                ? (isDark ? theme.colorScheme.primary : AppColors.primaryBlue)
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -350,12 +409,22 @@ class _AssessmentPageState extends State<AssessmentPage> {
             Icon(
               icon,
               size: 16,
-              color: isSelected ? AppColors.primaryBlue : Colors.grey,
+              color: isSelected
+                  ? (isDark ? theme.colorScheme.primary : AppColors.primaryBlue)
+                  : theme.colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 6),
-            Text(
-              label,
-              style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF111827)),
+            Flexible(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: isSelected
+                      ? (isDark ? theme.colorScheme.onPrimaryContainer : AppColors.primaryBlueDark)
+                      : theme.colorScheme.onSurface,
+                ),
+              ),
             ),
           ],
         ),
@@ -364,6 +433,8 @@ class _AssessmentPageState extends State<AssessmentPage> {
   }
 
   Widget _buildCheckboxTile(String value, String title) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isChecked = _redFlags.contains(value);
     return InkWell(
       onTap: () {
@@ -379,10 +450,14 @@ class _AssessmentPageState extends State<AssessmentPage> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: isChecked ? Colors.red.withValues(alpha: 0.05) : Colors.white,
+          color: isChecked
+              ? Colors.red.withValues(alpha: isDark ? 0.15 : 0.05)
+              : (isDark ? theme.colorScheme.surface : Colors.white),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: isChecked ? Colors.red.withValues(alpha: 0.3) : Colors.grey.withValues(alpha: 0.2),
+            color: isChecked
+                ? Colors.red.withValues(alpha: isDark ? 0.5 : 0.3)
+                : (isDark ? theme.colorScheme.outline : Colors.grey.withValues(alpha: 0.2)),
           ),
         ),
         child: Row(
@@ -403,7 +478,11 @@ class _AssessmentPageState extends State<AssessmentPage> {
             Expanded(
               child: Text(
                 title,
-                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Color(0xFF111827)),
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isDark ? theme.colorScheme.onSurface : const Color(0xFF111827),
+                ),
               ),
             ),
           ],

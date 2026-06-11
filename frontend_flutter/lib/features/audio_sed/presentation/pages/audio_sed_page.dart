@@ -77,11 +77,11 @@ class _AudioSedPageState extends State<AudioSedPage> {
                   // Left/Right split represented vertically on mobile
                   _buildAudioSedCard(context, state),
 
-                  // Sound samples selection
-                  _buildSamplesCard(context, samples),
-
-                  // AI Analysis results
+                  // AI Analysis results (Prioritized output next to recording input)
                   _buildAnalysisCard(context, state),
+
+                  // Sound samples selection (Moved to bottom as secondary test tools)
+                  _buildSamplesCard(context, samples),
                 ],
               ),
             ),
@@ -104,6 +104,7 @@ class _AudioSedPageState extends State<AudioSedPage> {
 
   Widget _buildModeSelector(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final isV1 = _selectedMode == 'v1';
 
     return Container(
@@ -124,7 +125,7 @@ class _AudioSedPageState extends State<AudioSedPage> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isV1 ? AppColors.primaryBlue : Colors.transparent,
+                  color: isV1 ? (isDark ? theme.colorScheme.primary : AppColors.primaryBlue) : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -132,7 +133,7 @@ class _AudioSedPageState extends State<AudioSedPage> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: isV1 ? Colors.white : theme.colorScheme.onSurface,
+                    color: isV1 ? (isDark ? theme.colorScheme.onPrimary : Colors.white) : theme.colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -147,7 +148,7 @@ class _AudioSedPageState extends State<AudioSedPage> {
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: !isV1 ? AppColors.primaryBlue : Colors.transparent,
+                  color: !isV1 ? (isDark ? theme.colorScheme.primary : AppColors.primaryBlue) : Colors.transparent,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
@@ -155,7 +156,7 @@ class _AudioSedPageState extends State<AudioSedPage> {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.bold,
-                    color: !isV1 ? Colors.white : theme.colorScheme.onSurface,
+                    color: !isV1 ? (isDark ? theme.colorScheme.onPrimary : Colors.white) : theme.colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -668,15 +669,17 @@ class _AudioSedPageState extends State<AudioSedPage> {
   }
 
   Widget _buildV2CoughBreakdown(BuildContext context, CoughTypeAnalysis ct) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final dryPct = ct.probabilities['dry'] ?? 0.0;
     final wetPct = ct.probabilities['wet'] ?? 0.0;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryBlueLight,
+        color: isDark ? theme.colorScheme.primaryContainer : AppColors.primaryBlueLight,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.primaryBlue.withValues(alpha: 0.15)),
+        border: Border.all(color: isDark ? theme.colorScheme.outline : AppColors.primaryBlue.withValues(alpha: 0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -695,14 +698,17 @@ class _AudioSedPageState extends State<AudioSedPage> {
                   children: [
                     RichText(
                       text: TextSpan(
-                        style: const TextStyle(color: Colors.black87, fontSize: 13),
+                        style: TextStyle(
+                          color: isDark ? theme.colorScheme.onPrimaryContainer : Colors.black87,
+                          fontSize: 13,
+                        ),
                         children: [
                           const TextSpan(text: 'Chẩn đoán ho: ', style: TextStyle(fontWeight: FontWeight.w500)),
                           TextSpan(
                             text: ct.coughTypeVi,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color: AppColors.primaryBlue,
+                              color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue,
                             ),
                           ),
                         ],
@@ -710,7 +716,10 @@ class _AudioSedPageState extends State<AudioSedPage> {
                     ),
                     Text(
                       'Độ chính xác AI: ${(ct.confidence * 100).toStringAsFixed(0)}%',
-                      style: TextStyle(color: AppColors.textMuted, fontSize: 10),
+                      style: TextStyle(
+                        color: isDark ? theme.colorScheme.onSurfaceVariant : AppColors.textMuted,
+                        fontSize: 10,
+                      ),
                     ),
                   ],
                 ),
@@ -726,15 +735,25 @@ class _AudioSedPageState extends State<AudioSedPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Ho khan', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
-                  Text('${(dryPct * 100).toStringAsFixed(0)}%', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Ho khan',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? theme.colorScheme.onSurfaceVariant : Colors.black54,
+                    ),
+                  ),
+                  Text(
+                    '${(dryPct * 100).toStringAsFixed(0)}%',
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: dryPct,
-                  backgroundColor: Colors.white,
+                  backgroundColor: isDark ? theme.colorScheme.surface : Colors.white,
                   color: AppColors.accentOrange,
                   minHeight: 6,
                 ),
@@ -750,16 +769,26 @@ class _AudioSedPageState extends State<AudioSedPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Ho có đờm', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.black54)),
-                  Text('${(wetPct * 100).toStringAsFixed(0)}%', style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold)),
+                  Text(
+                    'Ho có đờm',
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? theme.colorScheme.onSurfaceVariant : Colors.black54,
+                    ),
+                  ),
+                  Text(
+                    '${(wetPct * 100).toStringAsFixed(0)}%',
+                    style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
+                  ),
                 ],
               ),
               ClipRRect(
                 borderRadius: BorderRadius.circular(4),
                 child: LinearProgressIndicator(
                   value: wetPct,
-                  backgroundColor: Colors.white,
-                  color: AppColors.primaryBlue,
+                  backgroundColor: isDark ? theme.colorScheme.surface : Colors.white,
+                  color: isDark ? theme.colorScheme.primary : AppColors.primaryBlue,
                   minHeight: 6,
                 ),
               ),
