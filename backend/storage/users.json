@@ -14,5 +14,110 @@
     ],
     "vitals": {},
     "created_at": "2026-06-05T07:26:21.167219"
+  },
+  "d010f016-bdc4-4bf1-a34a-ba7d609131a2": {
+    "id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "name": "Minh Tuấn",
+    "device_token": "fcm_token_health360",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT"
+    ],
+    "symptoms": [
+      "hat_hoi_giao_mua",
+      "nghet_mui_sau_an",
+      "ho_khan_ve_dem",
+      "ngu_ngay_tho_mieng"
+    ],
+    "vitals": {
+      "temp": 36.6,
+      "spo2": 98
+    },
+    "created_at": "2026-06-13T08:31:29.372650"
+  },
+  "c76d90b1-5822-47a2-829d-c7f0faa25b0d": {
+    "id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "name": "Minh Tuấn",
+    "device_token": "fcm_token_health360",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT"
+    ],
+    "symptoms": [
+      "hat_hoi_giao_mua",
+      "nghet_mui_sau_an",
+      "ho_khan_ve_dem",
+      "ngu_ngay_tho_mieng"
+    ],
+    "vitals": {
+      "temp": 36.6,
+      "spo2": 98
+    },
+    "created_at": "2026-06-13T08:33:30.594324"
+  },
+  "29d9526f-d6b1-4448-b0d6-9e391789eb5e": {
+    "id": "29d9526f-d6b1-4448-b0d6-9e391789eb5e",
+    "name": "Minh Tuấn",
+    "device_token": "fcm_token_health360",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT"
+    ],
+    "symptoms": [
+      "hat_hoi_giao_mua",
+      "nghet_mui_sau_an",
+      "ho_khan_ve_dem",
+      "ngu_ngay_tho_mieng"
+    ],
+    "vitals": {
+      "temp": 36.6,
+      "spo2": 98
+    },
+    "created_at": "2026-06-13T08:40:39.855746"
+  },
+  "545fbf4c-e124-48ea-9b2e-d1cbe115b848": {
+    "id": "545fbf4c-e124-48ea-9b2e-d1cbe115b848",
+    "name": "Minh Tuấn",
+    "device_token": "fcm_token_health360",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT"
+    ],
+    "symptoms": [
+      "hat_hoi_giao_mua",
+      "nghet_mui_sau_an",
+      "ho_khan_ve_dem",
+      "ngu_ngay_tho_mieng"
+    ],
+    "vitals": {
+      "temp": 36.6,
+      "spo2": 98
+    },
+    "created_at": "2026-06-13T08:41:48.521819"
+  },
+  "21d110fa-2e11-4a3b-a78f-f9992bbf4b49": {
+    "id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "name": "Minh Tuấn",
+    "device_token": "fcm_token_health360",
+    "lat": 10.78,
+    "long": 106.7,
+    "disease_tags": [
+      "ENT"
+    ],
+    "symptoms": [
+      "hat_hoi_giao_mua",
+      "nghet_mui_sau_an",
+      "ho_khan_ve_dem",
+      "ngu_ngay_tho_mieng"
+    ],
+    "vitals": {
+      "temp": 36.6,
+      "spo2": 98
+    },
+    "created_at": "2026-06-13T08:43:12.927511"
   }
 }

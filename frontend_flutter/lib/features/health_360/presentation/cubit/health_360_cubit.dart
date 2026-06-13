@@ -215,6 +215,10 @@ class Health360Cubit extends Cubit<Health360State> {
     }
   }
 
+  void clearScannedFood() {
+    emit(state.copyWith(clearScannedFood: true));
+  }
+
   Future<void> toggleNightMic(bool active) async {
     emit(state.copyWith(isNightMicActive: active, clearError: true));
     try {

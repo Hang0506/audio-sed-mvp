@@ -1,0 +1,253 @@
+[
+  {
+    "event_type": "onboarding_sync_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "symptoms_count": 4
+    },
+    "timestamp": "2026-06-13T15:31:30.125086"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:32:48.746515"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:32:53.145366"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:32:55.791378"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:32:57.743302"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:32:59.994660"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:33:01.326579"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:33:12.699737"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:33:14.537786"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "d010f016-bdc4-4bf1-a34a-ba7d609131a2",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:33:16.116897"
+  },
+  {
+    "event_type": "onboarding_sync_success",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "symptoms_count": 4
+    },
+    "timestamp": "2026-06-13T15:33:31.341664"
+  },
+  {
+    "event_type": "complete_habit_task",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "task_id": "morn_task_1",
+      "coins_earned": 5
+    },
+    "timestamp": "2026-06-13T15:33:34.747055"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "food_key": "haisan"
+    },
+    "timestamp": "2026-06-13T15:33:48.093031"
+  },
+  {
+    "event_type": "complete_habit_task",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "task_id": "night_task_1",
+      "coins_earned": 15
+    },
+    "timestamp": "2026-06-13T15:35:06.806212"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:35:23.403303"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:35:24.957876"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "c76d90b1-5822-47a2-829d-c7f0faa25b0d",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:35:26.155211"
+  },
+  {
+    "event_type": "onboarding_sync_success",
+    "user_id": "29d9526f-d6b1-4448-b0d6-9e391789eb5e",
+    "metadata": {
+      "symptoms_count": 4
+    },
+    "timestamp": "2026-06-13T15:40:40.713640"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "29d9526f-d6b1-4448-b0d6-9e391789eb5e",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:40:52.089622"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "29d9526f-d6b1-4448-b0d6-9e391789eb5e",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:41:06.360539"
+  },
+  {
+    "event_type": "complete_habit_task",
+    "user_id": "29d9526f-d6b1-4448-b0d6-9e391789eb5e",
+    "metadata": {
+      "task_id": "night_task_1",
+      "coins_earned": 15
+    },
+    "timestamp": "2026-06-13T15:41:35.740735"
+  },
+  {
+    "event_type": "onboarding_sync_success",
+    "user_id": "545fbf4c-e124-48ea-9b2e-d1cbe115b848",
+    "metadata": {
+      "symptoms_count": 4
+    },
+    "timestamp": "2026-06-13T15:41:48.625035"
+  },
+  {
+    "event_type": "claim_weekly_bonus",
+    "user_id": "545fbf4c-e124-48ea-9b2e-d1cbe115b848",
+    "metadata": {
+      "coins": 450
+    },
+    "timestamp": "2026-06-13T15:41:51.563460"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "545fbf4c-e124-48ea-9b2e-d1cbe115b848",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:42:02.120109"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "545fbf4c-e124-48ea-9b2e-d1cbe115b848",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:42:56.679881"
+  },
+  {
+    "event_type": "onboarding_sync_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "symptoms_count": 4
+    },
+    "timestamp": "2026-06-13T15:43:13.093259"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:43:20.555476"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:43:23.714632"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:43:25.935541"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:44:07.661877"
+  },
+  {
+    "event_type": "food_scan_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "food_key": "phoga"
+    },
+    "timestamp": "2026-06-13T15:44:15.844579"
+  }
+]

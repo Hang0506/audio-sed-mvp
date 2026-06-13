@@ -3,9 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppColors {
   // Brand Colors
-  static const Color primaryBlue = Color(0xFF02509B);
-  static const Color primaryBlueDark = Color(0xFF003E7A);
-  static const Color primaryBlueLight = Color(0xFFF0F6FF);
+  static const Color primaryBlue = Color(0xFF1558F3);
+  static const Color primaryBlueDark = Color(0xFF003366);
+  static const Color primaryBlueLight = Color(0xFFEBF2FF);
+  static const Color navyText = Color(0xFF003366);
 
   static const Color accentOrange = Color(0xFFF37022);
   static const Color accentOrangeHover = Color(0xFFD85D15);

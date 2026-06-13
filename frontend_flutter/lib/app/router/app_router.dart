@@ -5,9 +5,11 @@ import 'package:go_router/go_router.dart';
 import '../di/injection_container.dart';
 import '../../features/audio_sed/domain/entities/analysis_result.dart';
 import '../../features/recommendation/domain/entities/recommendation_result.dart';
-import '../../features/audio_sed/presentation/cubit/audio_sed_cubit.dart';
 import '../../features/recommendation/presentation/cubit/recommendation_cubit.dart';
 import '../../features/audio_sed/presentation/pages/audio_sed_page.dart';
+import '../../features/audio_sed/presentation/pages/food_checker_detail_page.dart';
+import '../../features/audio_sed/presentation/pages/audio_analysis_detail_page.dart';
+import '../../features/audio_sed/presentation/pages/weekly_summary_page.dart';
 import '../../features/recommendation/presentation/pages/assessment_page.dart';
 import '../../features/recommendation/presentation/pages/recommendation_page.dart';
 import '../../features/recommendation/presentation/pages/sleep_assessment_page.dart';
@@ -26,10 +28,19 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => BlocProvider(
-          create: (_) => sl<AudioSedCubit>()..fetchSamples(),
-          child: const AudioSedPage(),
-        ),
+        builder: (context, state) => const AudioSedPage(),
+      ),
+      GoRoute(
+        path: '/food-checker',
+        builder: (context, state) => const FoodCheckerDetailPage(),
+      ),
+      GoRoute(
+        path: '/audio-analysis',
+        builder: (context, state) => const AudioAnalysisDetailPage(),
+      ),
+      GoRoute(
+        path: '/history',
+        builder: (context, state) => const WeeklySummaryPage(),
       ),
       GoRoute(
         path: '/assessment',
