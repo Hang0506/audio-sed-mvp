@@ -249,5 +249,22 @@
       "food_key": "phoga"
     },
     "timestamp": "2026-06-13T15:44:15.844579"
+  },
+  {
+    "event_type": "order_voucher_success",
+    "user_id": "21d110fa-2e11-4a3b-a78f-f9992bbf4b49",
+    "metadata": {
+      "product_name": "Voucher 50K Xịt Mũi Sinufresh",
+      "cost": 100
+    },
+    "timestamp": "2026-06-13T15:45:46.318906"
+  },
+  {
+    "event_type": "onboarding_sync_success",
+    "user_id": "ada57697-4481-4ce3-b491-abc36cf198ec",
+    "metadata": {
+      "symptoms_count": 4
+    },
+    "timestamp": "2026-06-13T15:46:14.750083"
   }
 ]

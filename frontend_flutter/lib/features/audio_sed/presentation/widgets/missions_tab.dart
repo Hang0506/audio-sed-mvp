@@ -293,15 +293,18 @@ class MissionsTab extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.bold,
-                color: isDark ? Colors.white : AppColors.primaryBlueDark,
-                height: 1.3,
+            SizedBox(
+              height: 32,
+              child: Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? Colors.white : AppColors.primaryBlueDark,
+                  height: 1.3,
+                ),
               ),
             ),
             const SizedBox(height: 4),
