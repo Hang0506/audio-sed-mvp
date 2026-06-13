@@ -59,8 +59,6 @@ Future<void> initDI() async {
   // Cubits
   sl.registerFactory(
     () => AudioSedCubit(
-      getSamples: sl(),
-      downloadSample: sl(),
       analyzeAudio: sl(),
     ),
   );

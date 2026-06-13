@@ -26,7 +26,7 @@ Future<void> runApplication() async {
       providers: [
         BlocProvider<ThemeCubit>(create: (_) => sl<ThemeCubit>()),
         BlocProvider<Health360Cubit>(create: (_) => sl<Health360Cubit>()),
-        BlocProvider<AudioSedCubit>(create: (_) => sl<AudioSedCubit>()..fetchSamples()),
+        BlocProvider<AudioSedCubit>(create: (_) => sl<AudioSedCubit>()),
       ],
       child: const MyApp(),
     ),

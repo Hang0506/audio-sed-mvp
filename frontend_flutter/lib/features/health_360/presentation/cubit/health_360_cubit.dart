@@ -45,21 +45,24 @@ class Health360Cubit extends Cubit<Health360State> {
     emit(state.copyWith(symptoms: updatedSymptoms));
   }
 
-  Future<void> submitSurvey() async {
+  Future<void> submitSurvey({List<String>? symptoms, List<String>? diseaseTags}) async {
     emit(state.copyWith(isOnboardingLoading: true, clearError: true));
     try {
-      final symptomList = <String>[];
-      if (state.symptoms['nose_weather'] == true) symptomList.add('hat_hoi_giao_mua');
-      if (state.symptoms['nose_food'] == true) symptomList.add('nghet_mui_sau_an');
-      if (state.symptoms['throat_cough'] == true) symptomList.add('ho_khan_ve_dem');
-      if (state.symptoms['throat_snore'] == true) symptomList.add('ngu_ngay_tho_mieng');
+      final symptomList = symptoms ?? <String>[];
+      if (symptomList.isEmpty) {
+        if (state.symptoms['nose_weather'] == true) symptomList.add('hat_hoi_giao_mua');
+        if (state.symptoms['nose_food'] == true) symptomList.add('nghet_mui_sau_an');
+        if (state.symptoms['throat_cough'] == true) symptomList.add('ho_khan_ve_dem');
+        if (state.symptoms['throat_snore'] == true) symptomList.add('ngu_ngay_tho_mieng');
+      }
+      final tags = diseaseTags ?? const ['ENT'];
 
       // 1. Call User Intake Use Case
       final intakeResult = await _submitUserIntake(
         SubmitUserIntakeParams(
           name: 'Minh Tuấn',
           symptoms: symptomList,
-          diseaseTags: const ['ENT'],
+          diseaseTags: tags,
           lat: 10.78,
           long: 106.7,
           deviceToken: 'fcm_token_health360',
@@ -190,10 +193,67 @@ class Health360Cubit extends Cubit<Health360State> {
         (response) async {
           final int coinReward = state.isScanRewarded ? 0 : 50;
 
+          // Override/ensure the correct simulation data for each foodKey
+          final Map<String, dynamic> mockedResponse = Map<String, dynamic>.from(response);
+          if (foodKey == 'phoga') {
+            mockedResponse['foods'] = [
+              {
+                'class_id': 0,
+                'name': 'Pho',
+                'name_vi': 'Phở Gà (Chicken Noodle)',
+                'confidence': 0.95,
+                'bbox': [50, 50, 400, 400],
+                'nutrition': {'Calories': 450, 'Fat': 10, 'Saturates': 3.5, 'Sugar': 3, 'Salt': 2.8}
+              }
+            ];
+            mockedResponse['total_nutrition'] = {'Calories': 450, 'Fat': 10, 'Saturates': 3.5, 'Sugar': 3, 'Salt': 2.8};
+            mockedResponse['risk_alerts'] = [];
+          } else if (foodKey == 'haisan') {
+            mockedResponse['foods'] = [
+              {
+                'class_id': 18,
+                'name': 'Lau',
+                'name_vi': 'Lẩu Hải Sản Cay',
+                'confidence': 0.92,
+                'bbox': [40, 40, 420, 420],
+                'nutrition': {'Calories': 550, 'Fat': 18, 'Saturates': 6, 'Sugar': 3, 'Salt': 3.5}
+              }
+            ];
+            mockedResponse['total_nutrition'] = {'Calories': 550, 'Fat': 18, 'Saturates': 6, 'Sugar': 3, 'Salt': 3.5};
+            mockedResponse['risk_alerts'] = [
+              {
+                'type': 'ent_irritant',
+                'severity': 'warning',
+                'message_vi': '🌶️ Lẩu Hải Sản Cay nóng — không tốt cho Tai Mũi Họng',
+                'food_name': 'Lẩu Hải Sản Cay'
+              }
+            ];
+          } else if (foodKey == 'dalanh') {
+            mockedResponse['foods'] = [
+              {
+                'class_id': 20,
+                'name': 'dalanh',
+                'name_vi': 'Kem Trái Cây Lạnh',
+                'confidence': 0.98,
+                'bbox': [60, 60, 380, 380],
+                'nutrition': {'Calories': 200, 'Fat': 8, 'Saturates': 2, 'Sugar': 3, 'Salt': 0.8}
+              }
+            ];
+            mockedResponse['total_nutrition'] = {'Calories': 200, 'Fat': 8, 'Saturates': 2, 'Sugar': 3, 'Salt': 0.8};
+            mockedResponse['risk_alerts'] = [
+              {
+                'type': 'ent_irritant',
+                'severity': 'warning',
+                'message_vi': '❄️ Kem Trái Cây Lạnh lạnh buốt — dễ gây buốt cổ họng và kích ứng Tai Mũi Họng',
+                'food_name': 'Kem Trái Cây Lạnh'
+              }
+            ];
+          }
+
           emit(state.copyWith(
             isScanning: false,
             scannedFoodKey: foodKey,
-            scannedFoodResponse: response,
+            scannedFoodResponse: mockedResponse,
             isScanRewarded: true,
             coins: state.coins + coinReward,
           ));

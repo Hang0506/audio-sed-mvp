@@ -494,17 +494,52 @@ class _FoodCheckerDetailPageState extends State<FoodCheckerDetailPage> {
 
   Widget _buildResultsCard(BuildContext context, Health360State state, bool isDark) {
     final response = state.scannedFoodResponse!;
-    final String foodName = response['food_name'] ?? 'Món Ăn';
     
-    // Custom logic to detect Pho Ga and details for Screen 5 specifications
-    final bool isPhoGa = foodName.contains('Phở') || state.scannedFoodKey == 'phoga';
-    
-    // Extract info dynamically or fallback toPho Ga defaults
-    final double antiInflamScore = isPhoGa ? 8.5 : 4.0;
-    final String ratingText = 'Độ chống viêm: $antiInflamScore/10 (Tốt)';
-    final String adviceText = isPhoGa 
-        ? 'Món ăn chứa các gia vị làm ấm tỳ vị, làm loãng dịch nhầy, rất có lợi cho người bị xoang mãn tính. Hạn chế thêm ớt và tiêu.'
-        : 'Chứa thành phần dễ gây kích ứng hoặc gây kích thích xoang. Cân nhắc giảm khẩu phần hoặc hạn chế gia vị đi kèm.';
+    // Parse detected foods
+    final List<dynamic> foods = response['foods'] ?? [];
+    final List<String> foodNames = foods.map((f) => (f['name_vi'] ?? f['name'] ?? '').toString()).toList();
+    final String foodName = foodNames.isNotEmpty ? foodNames.join(', ') : 'Món Ăn';
+
+    // Parse nutrition
+    final Map<String, dynamic> nutrition = response['total_nutrition'] ?? {};
+    final num calories = nutrition['Calories'] ?? 0;
+    final num fat = nutrition['Fat'] ?? 0;
+    final num saturates = nutrition['Saturates'] ?? 0;
+    final num sugar = nutrition['Sugar'] ?? 0;
+    final num salt = nutrition['Salt'] ?? 0;
+
+    // Parse alerts
+    final List<dynamic> alerts = response['risk_alerts'] ?? [];
+
+    String statusLabel = 'An toàn - Chống viêm';
+    Color badgeColor = const Color(0xFF2ECC71);
+    Color badgeBg = const Color(0xFFE8F8F5);
+    Color badgeBorder = const Color(0xFFA3E4D7);
+
+    final bool hasDanger = alerts.any((a) => a['severity'] == 'danger');
+    final bool hasWarning = alerts.any((a) => a['severity'] == 'warning');
+
+    if (hasDanger) {
+      statusLabel = 'Nguy cơ cao';
+      badgeColor = const Color(0xFFE74C3C);
+      badgeBg = const Color(0xFFFDEDEC);
+      badgeBorder = const Color(0xFFFADBD8);
+    } else if (hasWarning) {
+      statusLabel = 'Cần hạn chế';
+      badgeColor = const Color(0xFFF39C12);
+      badgeBg = const Color(0xFFFEF5E7);
+      badgeBorder = const Color(0xFFFDEBD0);
+    }
+
+    final double antiInflamScore = hasDanger ? 3.5 : (hasWarning ? 5.5 : 8.5);
+    final String ratingText = 'Điểm đánh giá sức khỏe: $antiInflamScore/10';
+
+    String adviceText = 'Món ăn không chứa thành phần gây kích ứng, an toàn để sử dụng.';
+    if (hasDanger) {
+      adviceText = 'Phát hiện có thành phần nguy cơ cao gây viêm hoặc kích ứng đường hô hấp. Khuyên dùng hạn chế tối đa hoặc thay thế bằng món ăn lành tính hơn.';
+    } else if (hasWarning) {
+      adviceText = 'Món ăn có thành phần cần kiểm soát liều lượng đối với tình trạng sức khỏe hiện tại của bạn. Vui lòng ăn với khẩu phần vừa phải.';
+    }
 
     return Card(
       elevation: 0,
@@ -536,16 +571,16 @@ class _FoodCheckerDetailPageState extends State<FoodCheckerDetailPage> {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8F8F5),
-                    border: Border.all(color: const Color(0xFFA3E4D7)),
+                    color: badgeBg,
+                    border: Border.all(color: badgeBorder),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text(
-                    'An toàn - Chống viêm',
+                  child: Text(
+                    statusLabel,
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFF2ECC71),
+                      color: badgeColor,
                     ),
                   ),
                 ),
@@ -558,62 +593,105 @@ class _FoodCheckerDetailPageState extends State<FoodCheckerDetailPage> {
               width: double.infinity,
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F8F5),
-                border: Border.all(color: const Color(0xFF2ECC71)),
+                color: badgeBg,
+                border: Border.all(color: badgeBorder),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 ratingText,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF2ECC71),
+                  color: badgeColor,
                 ),
               ),
             ),
             const SizedBox(height: 12),
 
-            // Ingredients Tags
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _buildTag('Gừng - Tốt', const Color(0xFFE8F8F5), const Color(0xFFA3E4D7), const Color(0xFF2ECC71)),
-                _buildTag('Hành - Tốt', const Color(0xFFE8F8F5), const Color(0xFFA3E4D7), const Color(0xFF2ECC71)),
-                _buildTag('Tiêu - Hạn chế', const Color(0xFFFDEDEC), const Color(0xFFFADBD8), const Color(0xFFE74C3C)),
-              ],
-            ),
-            const SizedBox(height: 12),
-
-            // Warning Banner
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFDEDEC),
-                border: Border.all(color: const Color(0xFFFADBD8)),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: const Row(
+            // Nutrition Chips Row
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
                 children: [
-                  Text(
-                    '⚠️',
-                    style: TextStyle(fontSize: 14, color: Color(0xFFE74C3C)),
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Cảnh báo: Chứa hạt tiêu có thể gây kích ứng biểu mô xoang.',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFFE74C3C),
-                      ),
-                    ),
-                  ),
+                  _buildNutritionChip('Calo', '${calories.toStringAsFixed(0)} kcal', Colors.orange),
+                  const SizedBox(width: 6),
+                  _buildNutritionChip('Chất béo', '${fat.toStringAsFixed(1)}g', Colors.blue),
+                  const SizedBox(width: 6),
+                  _buildNutritionChip('Béo bão hòa', '${saturates.toStringAsFixed(1)}g', Colors.purple),
+                  const SizedBox(width: 6),
+                  _buildNutritionChip('Đường', '${sugar.toStringAsFixed(1)}g', Colors.red),
+                  const SizedBox(width: 6),
+                  _buildNutritionChip('Muối', '${salt.toStringAsFixed(2)}g', Colors.teal),
                 ],
               ),
             ),
+            const SizedBox(height: 12),
+
+            // Warnings/Alerts Section
+            if (alerts.isEmpty) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F8F5),
+                  border: Border.all(color: const Color(0xFFA3E4D7)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Row(
+                  children: [
+                    Text('✅', style: TextStyle(fontSize: 14)),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Thực phẩm an toàn, không phát hiện nguy cơ kích ứng cho hồ sơ của bạn.',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF2ECC71),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ] else ...[
+              ...alerts.map((alert) {
+                final String msg = alert['message_vi'] ?? '';
+                final String severity = alert['severity'] ?? 'warning';
+                final bool isDanger = severity == 'danger';
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: isDanger ? const Color(0xFFFDEDEC) : const Color(0xFFFEF5E7),
+                      border: Border.all(color: isDanger ? const Color(0xFFFADBD8) : const Color(0xFFFDEBD0)),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Text(
+                          isDanger ? '⚠️' : '🔔',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            msg,
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w500,
+                              color: isDanger ? const Color(0xFFE74C3C) : const Color(0xFFD35400),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
             const SizedBox(height: 12),
 
             // AI Recommendation text
@@ -631,21 +709,26 @@ class _FoodCheckerDetailPageState extends State<FoodCheckerDetailPage> {
     );
   }
 
-  Widget _buildTag(String label, Color fill, Color stroke, Color text) {
+  Widget _buildNutritionChip(String label, String value, Color color) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: fill,
-        border: Border.all(color: stroke),
+        color: color.withAlpha((0.08 * 255).round()),
+        border: Border.all(color: color.withAlpha((0.2 * 255).round())),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontSize: 10,
-          fontWeight: FontWeight.bold,
-          color: text,
-        ),
+      child: Column(
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 8, color: AppColors.textMuted, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.bold),
+          ),
+        ],
       ),
     );
   }
